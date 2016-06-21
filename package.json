@@ -1,0 +1,25 @@
+{
+  "name": "tagpro",
+  "version": "0.0.1",
+  "description": "Yolo",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.13.4",
+    "python-shell": "^0.3.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/theogz/autolib.git"
+  },
+  "author": "Theo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/theogz/autolib/issues"
+  },
+  "homepage": "https://github.com/theogz/autolib#readme"
+}
