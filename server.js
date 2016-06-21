@@ -1,20 +1,39 @@
+var _ = require('underscore');
+
 var express = require('express');
 var app = express();
 var PythonShell = require('python-shell');
 var port = Number(process.env.PORT) || 3000;
 
+var pg = require('pg');
+var config = {
+    host: 'localhost',
+    user: 'cyril',
+    password: 'lol',
+    database: 'tagpro',
+    port: 5432
+};
+var pg_string = 'postgres://' + config.user + ':' + config.password + '@' + config.host + '/' + config.database 
+
 // needed to parse JSON data from client
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
-
 app.use(express.static('public'));
 
-var players_temp = require('./players.json');
 app.get('/playerList', function (req, res) {
-    // FIXME: load list from database instead
-    var players = players_temp;
-    res.send(players);
+    var pg_client = new pg.Client(pg_string);
+    pg_client.connect(function(err) {
+        if(err) return console.error('could not connect to postgres', err);
+
+        pg_client.query('SELECT * FROM players', function (err, result) {
+            if(err) return console.error('could not query db', err);
+
+            var players = result.rows;
+            res.send(players);
+            return pg_client.end();
+        });
+    });
 });
 
 app.post('/trueskill', function (req, res) {
@@ -23,15 +42,29 @@ app.post('/trueskill', function (req, res) {
     var scoreTeam1 = req.body.score['1'];
     var scoreTeam2 = req.body.score['2'];
 
-    console.log(team1, team2, scoreTeam1, scoreTeam2);
+    team1ids = _.map(team1, function (player) { return player.id });
+    team2ids = _.map(team2, function (player) { return player.id });
 
-    // PythonShell.run('main.py', options, function (err, results) {
-    //     if (err) throw err;
-    //     // results is an array consisting of messages collected during execution
-    //     console.log('results: %j', results);
-    // });
+    var pg_client = new pg.Client(pg_string);
+    pg_client.connect(function(err) {
+        if(err) return console.error('could not connect to postgres', err);
 
-    res.send({"message": "OK"});
+        pg_client.query('INSERT INTO matchs (team1, team2, score1, score2) VALUES ($1, $2, $3, $4) RETURNING id', [team1ids, team2ids, scoreTeam1, scoreTeam2], function (err, result) {
+            if(err) return console.error('could not query db', err);
+
+            console.log('Added match with id', result.rows[0]['id']);
+            res.send({"message": "OK"});
+
+            // TODO: database write is successful so run the python script to update players score
+            // PythonShell.run('main.py', options, function (err, results) {
+            //     if (err) throw err;
+            //     // results is an array consisting of messages collected during execution
+            //     console.log('results: %j', results);
+            // });
+
+            return pg_client.end();
+        });
+    });
 });
 
 app.get('*', function (req, res) { res.status(404).send('The flag has been captured.'); });

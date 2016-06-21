@@ -27,7 +27,7 @@ conn = psycopg2.connect(dbname="tagpro", user="cyril", host="localhost")
 cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
 # Create the table of players and the first players
-cur.execute("CREATE TABLE players (id serial PRIMARY KEY, name varchar);")
+cur.execute("CREATE TABLE players (id serial PRIMARY KEY, name varchar, mmr integer default 0);")
 cur.execute("INSERT INTO players (name) VALUES (%s);", ["HashtagYolo"])
 cur.execute("INSERT INTO players (name) VALUES (%s);", ["R0xx0r"])
 cur.execute("INSERT INTO players (name) VALUES (%s);", ["Batamanq"])
