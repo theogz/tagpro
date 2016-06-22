@@ -8,7 +8,7 @@ var port = Number(process.env.PORT) || 3000;
 var pg = require('pg');
 var config = {
     host: 'localhost',
-    user: 'cyril',
+    user: 'postgres',
     password: 'lol',
     database: 'tagpro',
     port: 5432
