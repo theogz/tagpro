@@ -9,7 +9,7 @@ var pg = require('pg');
 var config = {
     host: 'localhost',
     user: 'postgres',
-    password: 'lol',
+    password: 'psql',
     database: 'tagpro',
     port: 5432
 };
