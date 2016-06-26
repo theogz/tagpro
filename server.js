@@ -67,6 +67,21 @@ app.post('/trueskill', function (req, res) {
     });
 });
 
+app.get('/test-algo', function(req, res) {
+    var pg_client = new pg.Client(pg_string);
+    pg_client.connect(function(err) {
+        if(err) return console.error('could not connect to postgres', err);
+
+        pg_client.query('SELECT * FROM matchs', function (err, result) {
+            if(err) return console.error('could not query db', err);
+
+            var matchs = result.rows;
+            res.send(matchs);
+            return pg_client.end();
+        });
+    });
+});
+
 app.get('*', function (req, res) { res.status(404).send('The flag has been captured.'); });
 
 app.listen(port, function () { console.log('Tagpro Trueskill app running on port', port); });
