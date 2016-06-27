@@ -3,7 +3,7 @@ import psycopg2.extras
 
 
 # Connect to root database to create tagpro database
-conn = psycopg2.connect(dbname="postgres", user="postgres", host="localhost", port=5432)
+conn = psycopg2.connect(dbname="postgres", user="postgres", host="localhost", port=5432, password="psql")
 conn.set_isolation_level(0)
 
 # Open a cursor to perform database operations
@@ -22,7 +22,7 @@ cur.close()
 conn.close()
 
 # Connect to tagpro database and seed it
-conn = psycopg2.connect(dbname="tagpro", user="postgres", host="localhost")
+conn = psycopg2.connect(dbname="tagpro", user="postgres", host="localhost", password="psql")
 
 cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
