@@ -56,12 +56,9 @@ app.post('/trueskill', function (req, res) {
             console.log('Added match with id', result.rows[0]['id']);
             res.send({"message": "OK"});
 
-            // TODO: database write is successful so run the python script to update players score
-            // PythonShell.run('main.py', options, function (err, results) {
-            //     if (err) throw err;
-            //     // results is an array consisting of messages collected during execution
-            //     console.log('results: %j', results);
-            // });
+            PythonShell.run('main_postgres.py', function (err, results) {
+                if (err) throw err;
+            });
 
             return pg_client.end();
         });
