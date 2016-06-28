@@ -3,15 +3,8 @@ import pandas as pd
 import trueskill as ts
 import psycopg2
 import psycopg2.extras
-# import sys
-# import os
 
 
-# try:
-#     table_matchs = list(sys.argv[1])
-#     table_joueurs = list(sys.argv[2])
-# except IndexError:
-#     print "nope"
 
 #DB connections
 conn = psycopg2.connect(dbname="tagpro", user="postgres", host="localhost", password="psql")
@@ -21,27 +14,33 @@ cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 sql_matchs = "SELECT * FROM matchs;"
 sql_joueurs = "SELECT * FROM players;"
 
-
-table_joueurs = pd.io.sql.read_sql(sql_joueurs, conn, coerce_float=True, params=None)
+#We get the tables from the database :
+#players :
+table_joueurs = pd.read_sql(sql_joueurs, conn, coerce_float=True, params=None)
 liste_joueurs = table_joueurs["id"].tolist()
 niveau_joueurs = [x/100 for x in table_joueurs["mmr"].tolist()]
 confiance_joueurs = [x/100 for x in table_joueurs["sigma"].tolist()]
 rating_joueurs = [ts.Rating(x,y) for x,y in zip(niveau_joueurs, confiance_joueurs)]
 
-table_matchs = pd.io.sql.read_sql(sql_matchs, conn, coerce_float=True, params=None)
+#matchs :
+table_matchs = pd.read_sql(sql_matchs, conn, coerce_float=True, params=None)
 
-
+#We create the dictionary based on players' current rating :
 Caracteristiques = dict(zip(liste_joueurs, rating_joueurs))
 
 
+#Loop that update ratings for every match played :
 for i in xrange(0,table_matchs.shape[0]):
     if table_matchs.loc[i, "computed"]==0:
+
+        #We recreate the teams, their ratings and the outcome (1,0, 0,1 or 0,0)
         Joueurs_team_1 = table_matchs.loc[i,"team1"]
         Ratings_team_1 = [Caracteristiques[x] for x in Joueurs_team_1]
         Joueurs_team_2 = table_matchs.loc[i,"team2"]
         Ratings_team_2 = [Caracteristiques[x] for x in Joueurs_team_2]
         Victoire_1 = int((table_matchs.loc[i,"score1"]>table_matchs.loc[i,"score2"])+0)
         Victoire_2 = int((table_matchs.loc[i,"score1"]<table_matchs.loc[i,"score2"])+0)
+
         #We "simulate" the match
         New_ratings_team_1, New_ratings_team_2 = ts.rate([Ratings_team_1, Ratings_team_2], ranks=[Victoire_2,Victoire_1])
 
@@ -54,12 +53,26 @@ for i in xrange(0,table_matchs.shape[0]):
         #We make sure not to take the match into the algorithm anymore
         table_matchs.loc[i, "computed"]=1
 
-liste_joueurs_nv = Caracteristiques.keys()
-ratings_joueurs_nv = [int(x.mu*100) for x in Caracteristiques.values()]
-confiance_joueurs_nv = [int(x.sigma*100) for x in Caracteristiques.values()]
 
-print Caracteristiques
-print table_matchs
-# output = pd.DataFrame({"id":liste_joueurs_nv, "mmr":ratings_joueurs_nv, "name": table_joueurs["name"], "sigma":confiance_joueurs_nv})
+#We put everything into a new dataframe (for players) because it's simpler (the matchs dataframe has barely changed)
+liste_joueurs = Caracteristiques.keys()
+ratings_joueurs = [int(x.mu*100) for x in Caracteristiques.values()]
+name_joueurs = table_joueurs["name"]
+confiance_joueurs = [int(x.sigma*100) for x in Caracteristiques.values()]
 
-# output.to_json
+table_joueurs_nv = pd.DataFrame({'id':liste_joueurs, 'name':name_joueurs, 'mmr':ratings_joueurs, 'sigma':confiance_joueurs})
+
+
+for i in xrange(0,table_joueurs_nv.shape[0]):
+    cur.execute("UPDATE players SET mmr = %s, sigma=%s WHERE id = %s;", [int(table_joueurs_nv.loc[i,"mmr"]), int(table_joueurs_nv.loc[i,"sigma"]), int(table_joueurs_nv.loc[i,"id"])])
+
+for i in xrange(0, table_matchs.shape[0]):
+    cur.execute("UPDATE matchs SET computed = %s WHERE id = %s;", [int(table_matchs.loc[i,"computed"]), int(table_matchs.loc[i,"id"])])
+
+
+conn.commit()
+cur.close()
+conn.close()
+
+
+
