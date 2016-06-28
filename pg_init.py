@@ -40,8 +40,8 @@ cur.execute("SELECT count(*) FROM players;")
 print '%d players added to database' % cur.fetchone()['count']
 
 # Create the table of matchs and the first match
-cur.execute("CREATE TABLE matchs (id serial PRIMARY KEY, team1 integer[], team2 integer[], score1 integer, score2 integer);")
-cur.execute("INSERT INTO matchs (team1, team2, score1, score2) VALUES (%s, %s, %s, %s);", [[1,2], [3,4], 5, 2])
+cur.execute("CREATE TABLE matchs (id serial PRIMARY KEY, team1 integer[], team2 integer[], score1 integer, score2 integer, computed integer);")
+cur.execute("INSERT INTO matchs (team1, team2, score1, score2, computed) VALUES (%s, %s, %s, %s, %s);", [[1,2], [3,4], 5, 2, 0])
 
 # Make sure we have the match
 cur.execute("SELECT * FROM matchs;")

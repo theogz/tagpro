@@ -1,38 +1,53 @@
+# -*- coding: utf-8 -*-
 import pandas as pd
 import trueskill as ts
-
-matchs = pd.read_csv("3. resultat.csv", sep=";")
-
-
+# import sys
+# import os
 
 
-Caracteristiques = dict.fromkeys(Joueurs, ts.Rating())
+#Convention : team 1 = winner (if no draw) 
+# ==> TODO :need to reorder scores from table_matchs if needed
 
 
-# il y a matches.shape[0] matchs au total
-# xrange(0,matchs.shape[0]) va de 0 a match.shape[0]-1
+# try:
+#     table_matchs = list(sys.argv[1])
+#     table_joueurs = list(sys.argv[2])
+# except IndexError:
+#     print "nope"
 
-for i in xrange(0,matchs.shape[0]):
-    Joueurs_team_1 = matchs.iloc[i,1].split("//")
+table_joueurs = pd.read_json('http://localhost:3000/playerList')
+liste_joueurs = table_joueurs["id"].tolist()
+niveau_joueurs = [x/100 for x in table_joueurs["mmr"].tolist()]
+confiance_joueurs = [x/100 for x in table_joueurs["sigma"].tolist()]
+rating_joueurs = [ts.Rating(x,y) for x,y in zip(niveau_joueurs, confiance_joueurs)]
+
+table_matchs = pd.read_json('http://localhost:3000/test-algo')
+
+table_matchs["Nul"] = (table_matchs["score1"]==table_matchs["score2"])+0
+
+Caracteristiques = dict(zip(liste_joueurs, rating_joueurs))
+
+
+for i in xrange(0,table_matchs.shape[0]):
+    Joueurs_team_1 = table_matchs.loc[i,"team1"]
     Ratings_team_1 = [Caracteristiques[x] for x in Joueurs_team_1]
-    Joueurs_team_2 = matchs.iloc[i,2].split("//")
+    Joueurs_team_2 = table_matchs.loc[i,"team2"]
     Ratings_team_2 = [Caracteristiques[x] for x in Joueurs_team_2]
-
-    New_ratings_team_1, New_ratings_team_2 = ts.rate([Ratings_team_1, Ratings_team_2], ranks=[0,1-matchs.iloc[i,3]])
+    Victoire_1 = int((table_matchs.loc[i,"score1"]>table_matchs.loc[i,"score2"])+0)
+    Victoire_2 = int((table_matchs.loc[i,"score1"]<table_matchs.loc[i,"score2"])+0)
+    # We update ratings
+    New_ratings_team_1, New_ratings_team_2 = ts.rate([Ratings_team_1, Ratings_team_2], ranks=[Victoire_2,Victoire_1])
 
     for k in xrange(0,len(Joueurs_team_1)):
         Caracteristiques[Joueurs_team_1[k]] = New_ratings_team_1[k]
     for k in xrange(0, len(Joueurs_team_2)):
         Caracteristiques[Joueurs_team_2[k]] = New_ratings_team_2[k]
 
-Liste_joueurs = Caracteristiques.keys()
-Liste_mus = [x.mu for x in Caracteristiques.values()]
-Liste_sigmas = [x.sigma for x in Caracteristiques.values()]
+liste_joueurs_nv = Caracteristiques.keys()
+ratings_joueurs_nv = [int(x.mu*100) for x in Caracteristiques.values()]
+confiance_joueurs_nv = [int(x.sigma*100) for x in Caracteristiques.values()]
 
-output = pd.DataFrame({'Joueur':Liste_joueurs, 'Niveau':Liste_mus, 'Incertitude':Liste_sigmas})
-colonnes = ['Joueur', 'Niveau', 'Incertitude']
-output = output[colonnes]
+print Caracteristiques
+# output = pd.DataFrame({"id":liste_joueurs_nv, "mmr":ratings_joueurs_nv, "name": table_joueurs["name"], "sigma":confiance_joueurs_nv})
 
-output = output.sort_values(by='Niveau', ascending=False)
-
-output.to_csv("5. Classement.csv", sep=";", decimal=",", index=False, index_label=False)
+# output.to_json
