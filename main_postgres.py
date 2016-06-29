@@ -17,9 +17,10 @@ sql_joueurs = "SELECT * FROM players;"
 #We get the tables from the database :
 #players :
 table_joueurs = pd.read_sql(sql_joueurs, conn, coerce_float=True, params=None)
+
 liste_joueurs = table_joueurs["id"].tolist()
-niveau_joueurs = [x/100 for x in table_joueurs["mmr"].tolist()]
-confiance_joueurs = [x/100 for x in table_joueurs["sigma"].tolist()]
+niveau_joueurs = [float(x)/100 for x in table_joueurs["mmr"].tolist()]
+confiance_joueurs = [float(x)/100 for x in table_joueurs["sigma"].tolist()]
 rating_joueurs = [ts.Rating(x,y) for x,y in zip(niveau_joueurs, confiance_joueurs)]
 
 #matchs :
@@ -61,7 +62,6 @@ name_joueurs = table_joueurs["name"]
 confiance_joueurs = [int(x.sigma*100) for x in Caracteristiques.values()]
 
 table_joueurs_nv = pd.DataFrame({'id':liste_joueurs, 'name':name_joueurs, 'mmr':ratings_joueurs, 'sigma':confiance_joueurs})
-
 
 for i in xrange(0,table_joueurs_nv.shape[0]):
     cur.execute("UPDATE players SET mmr = %s, sigma=%s WHERE id = %s;", [int(table_joueurs_nv.loc[i,"mmr"]), int(table_joueurs_nv.loc[i,"sigma"]), int(table_joueurs_nv.loc[i,"id"])])
