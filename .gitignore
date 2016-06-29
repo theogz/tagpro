@@ -17,6 +17,12 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# Plotly API keys
+.Rprofile
+
+# R history
+.Rhistory
+
 # =========================
 # Operating System Files
 # =========================

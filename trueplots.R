@@ -1,7 +1,13 @@
+list.of.packages <- c("plotly", "reshape2", "plyr", "RPostgreSQL")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+
+
 library(plotly)
 library(reshape2)
 library(plyr)
 library(RPostgreSQL)
+
 
 
 con <- dbConnect(PostgreSQL(), user= "postgres", password="psql", dbname="tagpro")
@@ -39,7 +45,9 @@ data_fondue$Rang = rep(rank(-unique(data_fondue$Niveau)), each=nrow(data_fondue)
 p = ggplot(data=data_fondue, 
            aes(abscisse)) + 
   geom_area(aes(y=ordonnee, fill=Joueur), alpha=0.5, position="identity")+
-  xlim(0,60)
+  xlim(0,60)+
+  xlab("Niveau")+
+  ylab("")
 
 
 plot_creation = plotly_build(p)
@@ -49,4 +57,4 @@ for (i in 1:nb_joueurs){
                                        "<br> Rang : ", i)
 }
 
-plot_creation
+plotly_POST(plot_creation, filename = "trueskill-plot")

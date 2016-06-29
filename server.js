@@ -5,6 +5,7 @@ var app = express();
 var PythonShell = require('python-shell');
 var port = Number(process.env.PORT) || 3000;
 
+
 var pg = require('pg');
 var config = {
     host: 'localhost',
@@ -59,6 +60,7 @@ app.post('/trueskill', function (req, res) {
             PythonShell.run('main_postgres.py', function (err, results) {
                 if (err) throw err;
             });
+
 
             return pg_client.end();
         });
