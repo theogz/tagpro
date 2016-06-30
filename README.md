@@ -12,9 +12,30 @@ Run `python pg_init.py` to create the database, tables, and insert some values i
 
 ##Web server
 
-The web pages are served by Express running on NodeJS.
+The web pages are served by Express running on NodeJS. The entire project is built to be deployed on Heroku.
 
-Run `node server.js` to start the server (default port is 3000, edit according to your needs).
+Create/edit a `.env` file at the root of the project, containing the PostgreSQL config info:
+```
+PG_HOST="localhost"
+PG_USER="user"
+PG_PASSWORD="password"
+PG_DB="tagpro"
+PG_PORT=5432
+```
+
+Create/edit a `.Rprofile` file at the root of the project, containing the PostgreSQL and plotly config info:
+```
+Sys.setenv("plotly_api_key"="plotly_key")
+Sys.setenv("plotly_username"="plotly_user")
+Sys.setenv("PG_HOST"="localhost")
+Sys.setenv("PG_PORT"=5432)
+Sys.setenv("PG_USER"="user")
+Sys.setenv("PG_PASSWORD"="password")
+Sys.setenv("PG_DB"="tagpro")
+ 
+```
+
+Run `heroku local` to start the server (default port is 5000, edit according to your needs).
 
 Static resources (HTML pages, css, scripts, images) can be found in `/public`.
 
