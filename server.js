@@ -5,6 +5,9 @@ var app = express();
 var PythonShell = require('python-shell');
 var port = Number(process.env.PORT) || 3000;
 
+var exec = require('child_process').exec;
+
+
 
 var pg = require('pg');
 var config = {
@@ -59,6 +62,14 @@ app.post('/trueskill', function (req, res) {
 
             PythonShell.run('main_postgres.py', function (err, results) {
                 if (err) throw err;
+            });
+
+            exec('Rscript trueplots.R', function(error, stdout, stderr) {
+                console.log('stdout: ',stdout);
+                console.log('stderr: ',stderr);
+                if (error !=null) {
+                    console.log('exec error: ', error);
+                }
             });
 
 

@@ -3,7 +3,6 @@ import pandas as pd
 import trueskill as ts
 import psycopg2
 import psycopg2.extras
-import subprocess
 
 
 
@@ -75,6 +74,6 @@ conn.commit()
 cur.close()
 conn.close()
 
-subprocess.check_call(['Rscript', 'trueplots.R'], shell=False)
+
 
 
