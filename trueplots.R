@@ -10,7 +10,7 @@ library(RPostgreSQL)
 
 
 
-con <- dbConnect(PostgreSQL(), user= "postgres", password="psql", dbname="tagpro")
+con <- dbConnect(PostgreSQL(), host=Sys.getenv("PG_HOST"), port=Sys.getenv("PG_PORT"), user=Sys.getenv("PG_USER"), password=Sys.getenv("PG_PASSWORD"), dbname=Sys.getenv("PG_DB"))
 
 data = dbGetQuery(con, "SELECT * FROM players;")
 data = data[c(-1)]
@@ -33,7 +33,6 @@ for (i in 1:(nb_joueurs)){
 }
 colnames(data_pour_graphe)[c(-1)] = data$Joueur
 data_pour_graphe=data_pour_graphe[,-1]
-
 data_fondue = melt(data_pour_graphe)
 data_fondue$abscisse = rep(scope, nb_joueurs)
 colnames(data_fondue)[colnames(data_fondue)=="variable"]="Joueur"

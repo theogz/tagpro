@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
+import os
 import pandas as pd
 import trueskill as ts
 import psycopg2
 import psycopg2.extras
 
 
-
 #DB connections
-conn = psycopg2.connect(dbname="tagpro", user="postgres", host="localhost", password="psql")
+conn = psycopg2.connect(host=os.getenv('PG_HOST', 'localhost'), port=os.getenv('PG_PORT', 5432), user=os.getenv('PG_USER', 'postgres'), password=os.getenv('PG_PASSWORD', 'psql'), dbname=os.getenv('PG_DB', 'tagpro'))
 cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
 

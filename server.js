@@ -11,11 +11,11 @@ var exec = require('child_process').exec;
 
 var pg = require('pg');
 var config = {
-    host: 'localhost',
-    user: 'postgres',
-    password: 'psql',
-    database: 'tagpro',
-    port: 5432
+    host: process.env.PG_HOST || 'localhost',
+    user: process.env.PG_USER || 'postgres',
+    password: process.env.PG_PASSWORD || 'psql',
+    database: process.env.PG_DB || 'tagpro',
+    port: process.env.PG_PORT || 5432
 };
 var pg_string = 'postgres://' + config.user + ':' + config.password + '@' + config.host + '/' + config.database 
 
@@ -62,16 +62,14 @@ app.post('/trueskill', function (req, res) {
 
             PythonShell.run('main_postgres.py', function (err, results) {
                 if (err) throw err;
+                exec('Rscript trueplots.R', function(error, stdout, stderr) {
+                    console.log('stdout: ',stdout);
+                    console.log('stderr: ',stderr);
+                    if (error !=null) {
+                        console.log('exec error: ', error);
+                    }
+                });
             });
-
-            exec('Rscript trueplots.R', function(error, stdout, stderr) {
-                console.log('stdout: ',stdout);
-                console.log('stderr: ',stderr);
-                if (error !=null) {
-                    console.log('exec error: ', error);
-                }
-            });
-
 
             return pg_client.end();
         });
