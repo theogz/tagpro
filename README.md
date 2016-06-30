@@ -32,13 +32,13 @@ Sys.setenv("PG_PORT"=5432)
 Sys.setenv("PG_USER"="user")
 Sys.setenv("PG_PASSWORD"="password")
 Sys.setenv("PG_DB"="tagpro")
- 
+
 ```
 
 Run `heroku local` to start the server (default port is 5000, edit according to your needs).
 
 Static resources (HTML pages, css, scripts, images) can be found in `/public`.
 
-##Trueskill score update
+A Python script will compute the new rankings after each match
 
-TODO: After each match is inserted in database, a Python script is run to update each player's Trueskill score.
+A R script will draw a graph and send it to plot.ly for display
