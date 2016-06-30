@@ -39,6 +39,6 @@ Run `heroku local` to start the server (default port is 5000, edit according to 
 
 Static resources (HTML pages, css, scripts, images) can be found in `/public`.
 
-A Python script will compute the new rankings after each match
+A Python script will compute the new rankings after each match.
 
-A R script will draw a graph and send it to plot.ly for display
+A R script will draw a graph and send it to plot.ly for display.
