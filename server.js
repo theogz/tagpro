@@ -17,7 +17,8 @@ var config = {
     database: process.env.PG_DB || 'tagpro',
     port: process.env.PG_PORT || 5432
 };
-var pg_string = 'postgres://' + config.user + ':' + config.password + '@' + config.host + '/' + config.database 
+/*var pg_string = 'postgres://' + config.user + ':' + config.password + '@' + config.host + '/' + config.database */
+var pg_string = process.env.DATABASE_URL
 
 // needed to parse JSON data from client
 var bodyParser = require('body-parser');
