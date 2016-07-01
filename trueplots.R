@@ -39,7 +39,10 @@ colnames(data_fondue)[colnames(data_fondue)=="variable"]="Joueur"
 colnames(data_fondue)[colnames(data_fondue)=="value"]="ordonnee"
 
 data_fondue = join(data_fondue, data)
-data_fondue$Rang = rep(rank(-unique(data_fondue$Niveau)), each=nrow(data_fondue)/nb_joueurs)
+data$Rang = rank(data$Niveau, ties.method="min")
+data_fondue$Rang = rep(data$Rang, each=nrow(data_fondue)/nb_joueurs)
+#data_fondue$Rang = rep(rank(-unique(data_fondue$Niveau)), each=nrow(data_fondue)/nb_joueurs)
+#deprecated : problem with ties and unique()
 
 p = ggplot(data=data_fondue, 
            aes(abscisse)) + 
