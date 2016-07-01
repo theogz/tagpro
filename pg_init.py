@@ -8,19 +8,19 @@ conn = psycopg2.connect(os.environ['DATABASE_URL'])
 conn.set_isolation_level(0)
 
 # Open a cursor to perform database operations
-cur = conn.cursor()
+# cur = conn.cursor()
 
-# Drop the databse if exists
-cur.execute("DROP DATABASE IF EXISTS tagpro")
-# Create the database
-cur.execute("CREATE DATABASE tagpro")
+# # Drop the databse if exists
+# cur.execute("DROP DATABASE IF EXISTS tagpro")
+# # Create the database
+# cur.execute("CREATE DATABASE tagpro")
 
-# Make the changes to the database persistent
-conn.commit()
+# # Make the changes to the database persistent
+# conn.commit()
 
-# Close communication with the database
-cur.close()
-conn.close()
+# # Close communication with the database
+# cur.close()
+# conn.close()
 
 # Connect to tagpro database and seed it
 # conn = psycopg2.connect(dbname="tagpro", user="postgres", host="localhost", password="psql")
