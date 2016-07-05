@@ -1,4 +1,4 @@
-pandas==0.16.2
+numpy==1.6.2
 scipy==0.14.0
 trueskill==0.4.4
 psycopg2==2.6.1
