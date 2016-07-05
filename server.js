@@ -62,7 +62,8 @@ app.post('/trueskill', function (req, res) {
             res.send({"message": "OK"});
 
             PythonShell.run('main_postgres.py', function (err, results) {
-                if (err) throw err;
+                if (err) console.log(err);
+                
                 exec('Rscript trueplots.R', function(error, stdout, stderr) {
                     console.log('stdout: ',stdout);
                     console.log('stderr: ',stderr);
