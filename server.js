@@ -24,7 +24,6 @@ var pg_string = process.env.DATABASE_URL || 'postgres://' + config.user + ':' + 
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
-// commenting
 app.use(express.static('public'));
 
 app.get('/playerList', function (req, res) {
@@ -64,7 +63,7 @@ app.post('/trueskill', function (req, res) {
 
             PythonShell.run('main_postgres.py', function (err, results) {
                 if (err) console.log(err);
-
+                
                 exec('Rscript trueplots.R', function(error, stdout, stderr) {
                     console.log('stdout: ',stdout);
                     console.log('stderr: ',stderr);
