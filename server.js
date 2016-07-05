@@ -24,6 +24,7 @@ var pg_string = process.env.DATABASE_URL || 'postgres://' + config.user + ':' + 
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
+// serve static files for the Web
 app.use(express.static('public'));
 
 app.get('/playerList', function (req, res) {
