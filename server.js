@@ -63,9 +63,11 @@ app.post('/trueskill', function (req, res) {
 
             PythonShell.run('main.py', function (err, results) {
                 if (err) throw err;
+                console.log('Score updated');
+
                 PythonShell.run('graphs_plotly.py', function(err, results){
                     if (err) throw err;                
-
+                    console.log('Graph updated');
                 });
             });
             return pg_client.end();
