@@ -4,7 +4,7 @@ pandas==0.16.0
 trueskill==0.4.4
 psycopg2==2.6.1
 <<<<<<< HEAD
-pandas==0.12.0
+pandas==0.13.0
 plotly==1.12.2
 =======
 >>>>>>> fb602d68693722eda7b98e5b7960f845627d0cfe
