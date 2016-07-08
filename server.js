@@ -61,26 +61,13 @@ app.post('/trueskill', function (req, res) {
             console.log('Added match with id', result.rows[0]['id']);
             res.send({"message": "OK"});
 
-<<<<<<< HEAD
             PythonShell.run('main.py', function (err, results) {
                 if (err) throw err;
                 PythonShell.run('graphs plotly.py', function(err, results){
-                    if (err) throw err;
-=======
-            PythonShell.run('main_postgres.py', function (err, results) {
-                if (err) console.log(err);
-                
-                exec('Rscript trueplots.R', function(error, stdout, stderr) {
-                    console.log('stdout: ',stdout);
-                    console.log('stderr: ',stderr);
-                    if (error !=null) {
-                        console.log('exec error: ', error);
-                    }
->>>>>>> fb602d68693722eda7b98e5b7960f845627d0cfe
+                    if (err) throw err;                
+
                 });
-
             });
-
             return pg_client.end();
         });
     });
