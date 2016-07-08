@@ -53,4 +53,4 @@ traces = [go.Scatter(
 layout = go.Layout(title='Ranking tagpro')
 donnees=traces
 fig = go.Figure(data=donnees, layout=layout )
-py.iplot(fig, filename='ranking-tag')
+py.plot(fig, filename='ranking-tag')

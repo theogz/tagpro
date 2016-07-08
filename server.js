@@ -63,7 +63,7 @@ app.post('/trueskill', function (req, res) {
 
             PythonShell.run('main.py', function (err, results) {
                 if (err) throw err;
-                PythonShell.run('graphs plotly.py', function(err, results){
+                PythonShell.run('graphs_plotly.py', function(err, results){
                     if (err) throw err;                
 
                 });
