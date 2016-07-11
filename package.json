@@ -4,11 +4,12 @@
   "description": "Yolo",
   "main": "server.js",
   "dependencies": {
+    "basic-auth": "^1.0.4",
     "body-parser": "^1.15.2",
     "express": "^4.13.4",
     "pg": "*",
-    "r-script": "^0.0.3",
     "python-shell": "^0.3.0",
+    "r-script": "^0.0.3",
     "underscore": "^1.8.3"
   },
   "devDependencies": {},
