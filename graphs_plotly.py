@@ -35,7 +35,7 @@ data_for_graph = pd.DataFrame(scope)
 
 
 for i in xrange(0, nb_joueurs):
-    data_for_graph.loc[:,i+1]=[norm.pdf(x, loc=table_joueurs.loc[i,"Niveau"], scale=table_joueurs.loc[i, "Confiance"]) for 
+    data_for_graph.loc[:,i+1]=[norm.pdf(x, loc=table_joueurs.iloc[i, 1], scale=table_joueurs.iloc[i, 2]) for 
     x in scope]
 
 data_for_graph.columns = ["Abscisse"]+[joueur for joueur in table_joueurs["Joueur"]]
@@ -53,4 +53,4 @@ traces = [go.Scatter(
 layout = go.Layout(title='Ranking tagpro')
 donnees=traces
 fig = go.Figure(data=donnees, layout=layout )
-py.plot(fig, filename='ranking-tag')
+py.plot(fig, filename='ranking-tag', auto_open=False)
