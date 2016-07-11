@@ -52,5 +52,7 @@ traces = [go.Scatter(
 
 layout = go.Layout(title='Ranking tagpro')
 donnees=traces
-fig = go.Figure(data=donnees, layout=layout )
+fig = go.Figure(data=donnees, layout=layout)
+print "1"
 py.plot(fig, filename='ranking-tag', auto_open=False)
+print "2"
