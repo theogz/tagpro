@@ -8,7 +8,7 @@ from scipy.stats import norm
 import os
 
 
-py.sign_in(os.getenv('plotly_api_key'), os.getenv('plotly_username'))
+py.sign_in(os.getenv('plotly_username'), os.getenv('plotly_api_key'))
 
 x_min = 0
 x_max = 59.9
@@ -53,6 +53,4 @@ traces = [go.Scatter(
 layout = go.Layout(title='Ranking tagpro')
 donnees=traces
 fig = go.Figure(data=donnees, layout=layout)
-print "1"
 py.plot(fig, filename='ranking-tag', auto_open=False)
-print "2"

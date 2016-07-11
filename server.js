@@ -66,8 +66,7 @@ app.post('/trueskill', function (req, res) {
                 console.log('Score updated');
 
                 PythonShell.run('graphs_plotly.py', function(err, results){
-                    if (err) throw err;
-                    console.log('results: %j', results);                
+                    if (err) throw err;                
                     console.log('Graph updated');
                 });
             });
