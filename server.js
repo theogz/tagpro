@@ -6,10 +6,10 @@ var PythonShell = require('python-shell');
 var port = Number(process.env.PORT) || 3000;
 
 var exec = require('child_process').exec;
-
-
-
 var pg = require('pg');
+
+var basicAuth = require('basic-auth');
+
 var config = {
     host: process.env.PG_HOST || 'localhost',
     user: process.env.PG_USER || 'postgres',
@@ -20,11 +20,31 @@ var config = {
 
 var pg_string = process.env.DATABASE_URL || 'postgres://' + config.user + ':' + config.password + '@' + config.host + '/' + config.database;
 
+var auth = function (req,res,next){
+    function unauthorized(res){
+        res.set('WWW-Authenticate', 'Basic realm=Autorization Required');
+        return res.sendStatus(401)
+    };
+    var user = basicAuth(req);
+    if(!user || !user.name || !user.pass){
+        return unauthorized(res);
+    };
+    if (user.name == 'tagpro' && user.pass == 'pr0tag'){
+        return next();
+    } else {
+        return unauthorized(res);
+    }
+}
+
 // needed to parse JSON data from client
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
-app.use(express.static('public'));
+
+
+
+app.use(express.static('public'), auth);
+
 
 app.get('/playerList', function (req, res) {
     var pg_client = new pg.Client(pg_string);

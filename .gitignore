@@ -20,9 +20,7 @@ $RECYCLE.BIN/
 # Plotly API keys
 .Rprofile
 
-# R odd files
-.Rhistory
-Rplots.pdf
+
 
 # =========================
 # Operating System Files

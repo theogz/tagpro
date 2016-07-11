@@ -41,4 +41,4 @@ Static resources (HTML pages, css, scripts, images) can be found in `/public`.
 
 A Python script will compute the new rankings after each match.
 
-A R script will draw a graph and send it to plot.ly for display.
+Another Python script will plot the players' rankings through plotly.
