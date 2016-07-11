@@ -45,7 +45,7 @@ app.use(bodyParser.json());
 
 
 
-app.use(express.static('public'), auth);
+app.use(express.static('public'));
 
 
 app.get('/playerList', function (req, res) {
@@ -63,7 +63,7 @@ app.get('/playerList', function (req, res) {
     });
 });
 
-app.post('/trueskill', function (req, res) {
+app.post('/trueskill', auth, function (req, res) {
     var team1 = req.body.teams['1'];
     var team2 = req.body.teams['2'];
     var scoreTeam1 = req.body.score['1'];
