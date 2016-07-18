@@ -31,7 +31,7 @@ var BASIC_AUTH = [
         index_username: process.env.USERNAME_3,
         index_password: process.env.PASSWORD_3
     }
-]
+];
 
 var pg_string = process.env.DATABASE_URL || 'postgres://' + config.user + ':' + config.password + '@' + config.host + '/' + config.database;
 
