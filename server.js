@@ -32,13 +32,15 @@ var BASIC_AUTH = [
         index_password: process.env.PASSWORD_3
     }
 ];
-console.log(BASIC_AUTH[1]);
+
+
 var pg_string = process.env.DATABASE_URL || 'postgres://' + config.user + ':' + config.password + '@' + config.host + '/' + config.database;
 
 var auth = function (req,res,next){
     function unauthorized(res){
+        console.log('yolo');
         res.set('WWW-Authenticate', 'Basic realm=Autorization Required');
-        return res.sendStatus(401)
+        return res.sendStatus(401);
     };
     var user = basicAuth(req);
     if(!user || !user.name || !user.pass){
@@ -49,8 +51,7 @@ var auth = function (req,res,next){
             return next();
         };
     };
-    console.log('yolo');
-    return unauthorized(res);
+    /*return unauthorized(res);*/
 };
 
 // needed to parse JSON data from client
