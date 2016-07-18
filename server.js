@@ -47,10 +47,10 @@ var auth = function (req,res,next){
     for (var i = 0; i<BASIC_AUTH.length; i++){
         if (user.name == BASIC_AUTH[i].index_username && user.pass == BASIC_AUTH[i].index_password){
             return next();
-        }
-    }
+        };
+    };
     return unauthorized(res);
-}
+};
 
 // needed to parse JSON data from client
 var bodyParser = require('body-parser');
