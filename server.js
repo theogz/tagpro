@@ -2,6 +2,8 @@ var _ = require('underscore');
 
 var express = require('express');
 var app = express();
+app.disable('etag');
+
 var PythonShell = require('python-shell');
 var port = Number(process.env.PORT) || 3000;
 
