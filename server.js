@@ -45,7 +45,7 @@ var auth = function (req,res,next){
         return unauthorized(res);
     };
     for (var i = 0; i<BASIC_AUTH.length; i++){
-        if (user.name == BASIC_AUTH.index_username[i] && user.pass == BASIC_AUTH.index_password[i]){
+        if (user.name == BASIC_AUTH[i].index_username && user.pass == BASIC_AUTH[i].index_password){
             return next();
         }
     }
