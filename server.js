@@ -44,11 +44,12 @@ var auth = function (req,res,next){
     if(!user || !user.name || !user.pass){
         return unauthorized(res);
     };
-    if (user.name == BASIC_AUTH.index_username && user.pass == BASIC_AUTH.index_password){
-        return next();
-    } else {
-        return unauthorized(res);
+    for (var i = 0; i<BASIC_AUTH.length; i++){
+        if (user.name == BASIC_AUTH.index_username[i] && user.pass == BASIC_AUTH.index_password[i]){
+            return next();
+        }
     }
+    return unauthorized(res);
 }
 
 // needed to parse JSON data from client
