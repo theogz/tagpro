@@ -51,8 +51,10 @@ var auth = function (req,res,next){
             return next();
         };
     };
-    /*return unauthorized(res);*/
+    return unauthorized(res);
 };
+
+console.log(auth)
 
 // needed to parse JSON data from client
 var bodyParser = require('body-parser');
