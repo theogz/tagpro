@@ -32,7 +32,7 @@ var BASIC_AUTH = [
         index_password: process.env.PASSWORD_3
     }
 ];
-
+console.log(BASIC_AUTH[1]);
 var pg_string = process.env.DATABASE_URL || 'postgres://' + config.user + ':' + config.password + '@' + config.host + '/' + config.database;
 
 var auth = function (req,res,next){
@@ -49,7 +49,7 @@ var auth = function (req,res,next){
             return next();
         };
     };
-    console.log('yolo')
+    console.log('yolo');
     return unauthorized(res);
 };
 
