@@ -49,6 +49,7 @@ var auth = function (req,res,next){
             return next();
         };
     };
+    console.log('yolo')
     return unauthorized(res);
 };
 
