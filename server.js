@@ -15,10 +15,23 @@ var config = {
     user: process.env.PG_USER || 'postgres',
     password: process.env.PG_PASSWORD || 'psql',
     database: process.env.PG_DB || 'tagpro',
-    port: process.env.PG_PORT || 5432,
-    index_username: process.env.USERNAME,
-    index_password: process.env.PASSWORD
+    port: process.env.PG_PORT || 5432
 };
+
+var BASIC_AUTH = [
+    {
+        index_username: process.env.USERNAME,
+        index_password: process.env.PASSWORD
+    },
+    {
+        index_username: process.env.USERNAME_2,
+        index_password: process.env.PASSWORD_2
+    },
+    {
+        index_username: process.env.USERNAME_3,
+        index_password: process.env.PASSWORD_3
+    }
+]
 
 var pg_string = process.env.DATABASE_URL || 'postgres://' + config.user + ':' + config.password + '@' + config.host + '/' + config.database;
 
@@ -31,7 +44,7 @@ var auth = function (req,res,next){
     if(!user || !user.name || !user.pass){
         return unauthorized(res);
     };
-    if (user.name == config.index_username && user.pass == config.index_password){
+    if (user.name == BASIC_AUTH.index_username && user.pass == BASIC_AUTH.index_password){
         return next();
     } else {
         return unauthorized(res);
