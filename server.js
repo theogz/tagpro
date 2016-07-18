@@ -36,25 +36,7 @@ var BASIC_AUTH = [
 
 var pg_string = process.env.DATABASE_URL || 'postgres://' + config.user + ':' + config.password + '@' + config.host + '/' + config.database;
 
-var auth = function (req,res,next){
-    function unauthorized(res){
-        console.log('yolo');
-        res.set('WWW-Authenticate', 'Basic realm=Autorization Required');
-        return res.sendStatus(401);
-    };
-    var user = basicAuth(req);
-    if(!user || !user.name || !user.pass){
-        return unauthorized(res);
-    };
-    for (var i = 0; i<BASIC_AUTH.length; i++){
-        if (user.name == BASIC_AUTH[i].index_username && user.pass == BASIC_AUTH[i].index_password){
-            return next();
-        };
-    };
-    return unauthorized(res);
-};
 
-console.log(auth)
 
 // needed to parse JSON data from client
 var bodyParser = require('body-parser');
@@ -80,6 +62,25 @@ app.get('/playerList', function (req, res) {
         });
     });
 });
+
+var auth = function (req,res,next){
+    function unauthorized(res){
+        console.log('yolo');
+        res.set('WWW-Authenticate', 'Basic realm=Autorization Required');
+        return res.sendStatus(401);
+    };
+    var user = basicAuth(req);
+    if(!user || !user.name || !user.pass){
+        return unauthorized(res);
+    };
+    for (var i = 0; i<BASIC_AUTH.length; i++){
+        if (user.name == BASIC_AUTH[i].index_username && user.pass == BASIC_AUTH[i].index_password){
+            return next();
+        };
+    };
+    return unauthorized(res);
+};
+
 
 app.post('/trueskill', auth, function (req, res) {
     var team1 = req.body.teams['1'];
