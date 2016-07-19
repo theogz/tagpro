@@ -3,8 +3,8 @@ var _ = require('underscore');
 var express = require('express');
 var app = express();
 
-var dotenv = require('dotenv');
-dotenv.load();
+/*var dotenv = require('dotenv');
+dotenv.load();*/
 
 var PythonShell = require('python-shell');
 var port = Number(process.env.PORT) || 3000;
@@ -34,6 +34,14 @@ var BASIC_AUTH = [
     {
         index_username: process.env.USERNAME_3,
         index_password: process.env.PASSWORD_3
+    },
+    {
+        index_username: process.env.USERNAME_4,
+        index_password: process.env.PASSWORD_4
+    },
+    {
+        index_username: process.env.USERNAME_5,
+        index_password: process.env.PASSWORD_5
     }
 ];
 
@@ -123,7 +131,7 @@ app.post('/trueskill', auth, function (req, res) {
     });
 });
 
-app.get('/test-algo', function(req, res) {
+app.get('/matchList', function(req, res) {
     var pg_client = new pg.Client(pg_string);
     pg_client.connect(function(err) {
         if(err) return console.error('could not connect to postgres', err);
