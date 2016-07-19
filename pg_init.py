@@ -3,8 +3,8 @@ import psycopg2.extras
 import os
 
 # Connect to root database to create tagpro database
-# conn = psycopg2.connect(dbname="postgres", user="postgres", host="localhost", port=5432, password="psql")
-conn = psycopg2.connect(os.environ['DATABASE_URL'])
+conn = psycopg2.connect(host=os.getenv('PG_HOST', 'localhost'), port=os.getenv('PG_PORT', 5432), user=os.getenv('PG_USER', 'postgres'), password=os.getenv('PG_PASSWORD', 'psql'), dbname=os.getenv('PG_DB', 'tagpro'))
+# conn = psycopg2.connect(os.environ['DATABASE_URL'])
 conn.set_isolation_level(0)
 
 # Open a cursor to perform database operations
@@ -23,8 +23,8 @@ conn.set_isolation_level(0)
 # conn.close()
 
 # Connect to tagpro database and seed it
-# conn = psycopg2.connect(dbname="tagpro", user="postgres", host="localhost", password="psql")
-conn = psycopg2.connect(os.environ['DATABASE_URL'])
+conn = psycopg2.connect(host=os.getenv('PG_HOST', 'localhost'), port=os.getenv('PG_PORT', 5432), user=os.getenv('PG_USER', 'postgres'), password=os.getenv('PG_PASSWORD', 'psql'), dbname=os.getenv('PG_DB', 'tagpro'))
+# conn = psycopg2.connect(os.environ['DATABASE_URL'])
 cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
 # Create the table of players and the first players
@@ -53,7 +53,7 @@ print '%d players added to database' % cur.fetchone()['count']
 
 # Create the table of matchs and the first match
 cur.execute("DROP TABLE matchs")
-cur.execute("CREATE TABLE matchs (id serial PRIMARY KEY, team1 integer[], team2 integer[], score1 integer, score2 integer, computed integer);")
+cur.execute("CREATE TABLE matchs (id serial PRIMARY KEY, team1 integer[], team2 integer[], score1 integer, score2 integer, computed integer, added_by varchar);")
 # cur.execute("INSERT INTO matchs (team1, team2, score1, score2, computed) VALUES (%s, %s, %s, %s, %s);", [[1,2], [3,4], 5, 2, 0])
 
 # Make sure we have the match

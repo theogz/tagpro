@@ -2,7 +2,9 @@ var _ = require('underscore');
 
 var express = require('express');
 var app = express();
-app.disable('etag');
+
+var dotenv = require('dotenv');
+dotenv.load();
 
 var PythonShell = require('python-shell');
 var port = Number(process.env.PORT) || 3000;
@@ -65,9 +67,10 @@ app.get('/playerList', function (req, res) {
     });
 });
 
+var user_logged;
+
 var auth = function (req,res,next){
     function unauthorized(res){
-        console.log('yolo');
         res.set('WWW-Authenticate', 'Basic realm=Autorization Required');
         return res.sendStatus(401);
     };
@@ -75,6 +78,7 @@ var auth = function (req,res,next){
     if(!user || !user.name || !user.pass){
         return unauthorized(res);
     };
+    user_logged = user.name;
     for (var i = 0; i<BASIC_AUTH.length; i++){
         if (user.name == BASIC_AUTH[i].index_username && user.pass == BASIC_AUTH[i].index_password){
             return next();
@@ -82,6 +86,7 @@ var auth = function (req,res,next){
     };
     return unauthorized(res);
 };
+
 
 
 app.post('/trueskill', auth, function (req, res) {
@@ -98,7 +103,7 @@ app.post('/trueskill', auth, function (req, res) {
     pg_client.connect(function(err) {
         if(err) return console.error('could not connect to postgres', err);
 
-        pg_client.query('INSERT INTO matchs (team1, team2, score1, score2, computed) VALUES ($1, $2, $3, $4, $5) RETURNING id', [team1ids, team2ids, scoreTeam1, scoreTeam2, matchComputed], function (err, result) {
+        pg_client.query('INSERT INTO matchs (team1, team2, score1, score2, computed, added_by) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id', [team1ids, team2ids, scoreTeam1, scoreTeam2, matchComputed, user_logged], function (err, result) {
             if(err) return console.error('could not query db', err);
 
             console.log('Added match with id', result.rows[0]['id']);
