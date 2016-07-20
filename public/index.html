@@ -54,16 +54,16 @@
             </ul>
         </div>
         <div style="float:left">
-            <p>Team 1</p>
+            <p>Team rouge</p>
             <ul id="team1" style="overflow:hidden">
             </ul>
-            <div id="buttonTeam1" class="button" onClick="goToTeam2()">Valider équipe 1</div>
+            <div id="buttonTeam1" class="button" onClick="goToTeam2()">Valider équipe rouge</div>
         </div>
         <div style="float:left">
-            <p>Team 2</p>
+            <p>Team bleue</p>
             <ul id="team2" style="overflow:hidden">
             </ul>
-            <div id="buttonTeam2" class="button" onClick="sendMatch()" style="display:none">Valider équipe 2</div>
+            <div id="buttonTeam2" class="button" onClick="sendMatch()" style="display:none">Valider équipe bleue</div>
         </div>
         
 
@@ -152,8 +152,8 @@
 
             // Send match data to server
             var sendMatch = function () {
-                var scoreTeam1 = parseInt(window.prompt('Score équipe 1'));
-                var scoreTeam2 = parseInt(window.prompt('Score équipe 2'));
+                var scoreTeam1 = parseInt(window.prompt('Score équipe rouge'));
+                var scoreTeam2 = parseInt(window.prompt('Score équipe bleue'));
                 xhr('POST', '/trueskill', {teams: teams, score: {'1': scoreTeam1, '2': scoreTeam2}}, function () {
                     document.getElementById('buttonTeam2').style.display = 'none';
                     document.getElementById('done').style.display = 'block';
