@@ -136,7 +136,7 @@ app.get('/matchList', function(req, res) {
     pg_client.connect(function(err) {
         if(err) return console.error('could not connect to postgres', err);
 
-        pg_client.query('SELECT * FROM matchs', function (err, result) {
+        pg_client.query('SELECT * FROM matchs ORDER BY id', function (err, result) {
             if(err) return console.error('could not query db', err);
 
             var matchs = result.rows;
