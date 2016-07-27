@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Ranking tagpro</title>
+        <meta charset="utf-8">
+        <style type="text/css">
+            @import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900);
+    
+            body {
+                font-family: Roboto;
+            }
+
+            .button {
+                padding: 10px 20px;
+                display: inline-block;
+                background-color: #2d2d2d;
+                color: white;
+                border-radius: 20px 0px 20px 0px;
+                box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, .5);
+                margin-right: 10px;
+                cursor:pointer;
+                font-weight: bold;
+            }
+
+            .button:hover {
+                box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, .5);
+            }
+            table, th, td {
+                border: 1px solid black;
+                border-collapse: collapse;
+            }
+            th, td {
+                padding: 5px;
+                text-align: left;
+            }
+        </style>
+    </head>
+    <body>
+
+        <h2>Matchs récents :</h2>
+        <div>
+            <table id="matchs" style="width:100%;">
+                <tr style="font-weight: bold;">
+                    <td>
+                        Joueur
+                    </td>
+                    <td>
+                        Niveau moyen
+                    </td>
+                    <td>
+                        Niveau théorique
+                    </td>
+                </tr>
+                <!-- Will be completed with the list of matchs from the server -->
+            </table>
+        </div>        
+
+
+
+        <script type="text/javascript">
+
+            // Simple asynchronous requests to server
+            function xhr(method, url, data, callback, errorCB) {
+              var req = new XMLHttpRequest()
+              req.open(method, url, true);
+
+              req.onload = function(e) {
+                if (this.status.toString()[0] === '2') {
+                  callback(JSON.parse(this.responseText));
+                } else {
+                  errorCB(this.status, this.responseText);
+                }
+              }
+
+              if (method === 'POST') {
+                req.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+                req.send(JSON.stringify(data));
+              } else {
+                req.send();
+              }
+            }
+
+            // Load players list from server into the DOM
+            var loadPlayerList = function () {
+                xhr('GET', '/playerList', null, function (list) {
+
+                    for (var i = 0; i < list.length; i++) (function (players) {
+                        var tr = document.createElement('tr');
+                        var td1 = document.createElement('td');
+                        var td2 = document.createElement('td');
+                        var td3 = document.createElement('td');
+                        td1.innerHTML = players.name;
+                        td2.innerHTML = players.mmr;
+                        td3.innerHTML = players.mmr-3*players.sigma;
+
+                        document.getElementById('matchs').appendChild(tr);
+                        document.getElementById('matchs').appendChild(td1);
+                        document.getElementById('matchs').appendChild(td2);
+                        document.getElementById('matchs').appendChild(td3);
+                    })(list[list.length-i-1]);
+
+                }, function (error, data) {
+                    // error handling
+                    console.log(error, data);
+                });
+            };
+
+            loadPlayerList();
+        </script>
+    </body>
+</html>
