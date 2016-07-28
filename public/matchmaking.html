@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Ranking tagpro</title>
+        <meta charset="utf-8">
+        <style type="text/css">
+            @import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900);
+    
+            body {
+                font-family: Roboto;
+            }
+
+            #joueurs {
+              padding: 0;
+            }
+
+            .joueur, .button {
+                padding: 10px 20px;
+                display: inline-block;
+                background-color: #2d2d2d;
+                color: white;
+                border-radius: 20px 0px 20px 0px;
+                box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, .5);
+                margin-right: 10px;
+                cursor:pointer;
+                font-weight: bold;
+            }
+
+            .button:hover {
+                box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, .5);
+            }
+
+            .joueur:hover {
+                box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, .5);
+                background-color: orange;
+            }
+
+            .joueur.added {
+                background: grey;
+            }
+            .joueur.added.matchmaked {
+                background-color: #2d2d2d;
+            }
+            table, th, td {
+                border: 1px solid black;
+                border-collapse: collapse;
+            }
+            th, td {
+                padding: 5px;
+                text-align: left;
+            }
+        </style>
+    </head>
+    <body>
+    
+        <div class="button" style="clear:both;float:left;margin-top:20px;margin-bottom:20px;" onclick="window.location='/'">
+            Accueil
+        </div>
+        <h2 style="clear:both;">Sélectionner les joueurs présents :</h2>
+
+
+        <div>
+            <ul id="joueurs">
+                <!-- Will be completed with the list of players from the server -->
+            </ul>
+        </div>
+
+        <div class="button" style="clear:both;float:left;margin-top:20px" onclick="sendList()">
+            Générer les équipes
+        </div>
+
+        <script type="text/javascript">
+
+            var players = [];
+            // Simple asynchronous requests to server
+            function xhr(method, url, data, callback, errorCB) {
+              var req = new XMLHttpRequest()
+              req.open(method, url, true);
+
+              req.onload = function(e) {
+                if (this.status.toString()[0] === '2') {
+                  callback(JSON.parse(this.responseText));
+                } else {
+                  errorCB(this.status, this.responseText);
+                }
+              }
+
+              if (method === 'POST') {
+                req.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+                req.send(JSON.stringify(data));
+              } else {
+                req.send();
+              }
+            }
+
+            // Load player list from server into the DOM
+            var loadPlayerList = function () {
+                xhr('GET', '/playerList', null, function (list) {
+
+                    for (var i = 0; i < list.length; i++) (function (player) {
+                        var li = document.createElement('li');
+                        li.innerHTML = player.name;
+                        li.classList.add('joueur');
+                        li.addEventListener('click', function () {
+                            addPlayerToPlayerList(player);
+                            li.classList.add('added');
+                        }, false);
+                        document.getElementById('joueurs').appendChild(li);
+                    })(list[i]);
+
+                }, function (error, data) {
+                    // error handling
+                    console.log(error, data);
+                });
+            };
+
+            loadPlayerList();
+
+            // Add player to player list
+            var addPlayerToPlayerList = function(player) {
+                if (players.indexOf(player.name) === -1) {
+                    players.push(player.name);
+                }
+            };
+
+
+            var sendList = function() {
+                xhr('POST', '/matchmaking', {players: players}, function() {
+                    var elements = document.getElementsByClassName('added');
+                    // l'assignation est bizarre : elements est recalcule tout le temps sans que je lui demande
+                    console.log("test");
+                    for(var j = 0; j < elements.length; j++) {
+                        console.log(elements)
+                        console.log(j);
+                        console.log("lol");
+                        console.log(elements[j]);
+                        elements[j].className='joueur';
+                    }
+                }, function (error, data) {
+                    // error handling
+                    console.log(error, data);
+                });
+            };
+
+            //loadFairTeams() a executer "apres" le code python
+            
+        </script>
+    </body>
+</html>

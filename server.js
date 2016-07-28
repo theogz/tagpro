@@ -131,6 +131,18 @@ app.post('/trueskill', auth, function (req, res) {
     });
 });
 
+app.post('/matchmaking', function(req, res) {
+    var players = req.body.players;
+    console.log(players);
+    var options = {
+        args: [players]
+    };
+    res.send(players)
+    PythonShell.run('matchmaking.py', options, function(err, results) {
+        console.log('results: %j', results);
+    });
+});
+
 app.get('/matchList', function(req, res) {
     var pg_client = new pg.Client(pg_string);
     pg_client.connect(function(err) {
