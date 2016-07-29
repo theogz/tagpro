@@ -13,7 +13,6 @@ import trueskill as ts
 import itertools
 import psycopg2
 import psycopg2.extras
-import json
 
 
 

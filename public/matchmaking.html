@@ -125,11 +125,10 @@
 
 
             var sendList = function() {
-                xhr('POST', '/matchmaking', {ids: ids}, function() {
-                    var elements = document.getElementsByClassName('added');
-                    //backwards loop as elements is updated dynamically
-                    for(var j = elements.length-1; j >= 0; --j) {
-                        elements[j].classList.remove('added');
+                xhr('POST', '/matchmaking', {ids: ids}, function(results) {
+                    var elements = document.getElementsByClassName('joueur');
+                    for (var j = 0; j < elements.length; j++) {
+                                    elements[j].classList.remove('added');
                     }
                 }, function (error, data) {
                     // error handling
