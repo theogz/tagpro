@@ -49,6 +49,14 @@
                 padding: 5px;
                 text-align: left;
             }
+
+            .red {
+                background-color: hsl(0, 50%, 50%);
+            }
+
+            .blu {
+                background-color: hsl(240, 50%, 50%);
+            }
         </style>
     </head>
     <body>
@@ -101,6 +109,7 @@
                         var li = document.createElement('li');
                         li.innerHTML = player.name;
                         li.classList.add('joueur');
+                        li.id = player.id;
                         li.addEventListener('click', function () {
                             addPlayerToPlayerList(player);
                             li.classList.add('added');
@@ -125,12 +134,21 @@
 
 
             var sendList = function() {
-                xhr('POST', '/matchmaking', {ids: ids}, function() {
-                    var elements = document.getElementsByClassName('added');
-                    //backwards loop as elements is updated dynamically
-                    for(var j = elements.length-1; j >= 0; --j) {
+                xhr('POST', '/matchmaking', {ids: ids}, function (data) {
+                    var elements = document.getElementsByClassName('joueur');
+                    for (var j = 0; j < elements.length; j++) {
                         elements[j].classList.remove('added');
                     }
+
+                    // Team 1 in RED
+                    data[0].forEach(function (id) {
+                        document.getElementById(id).classList.add('red');
+                    });
+
+                    // Team 2 in BLU
+                    data[1].forEach(function (id) {
+                        document.getElementById(id).classList.add('blu');
+                    });
                 }, function (error, data) {
                     // error handling
                     console.log(error, data);
