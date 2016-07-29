@@ -71,7 +71,7 @@
 
         <script type="text/javascript">
 
-            var players = [];
+            var ids = [];
             // Simple asynchronous requests to server
             function xhr(method, url, data, callback, errorCB) {
               var req = new XMLHttpRequest()
@@ -118,23 +118,18 @@
 
             // Add player to player list
             var addPlayerToPlayerList = function(player) {
-                if (players.indexOf(player.name) === -1) {
-                    players.push(player.name);
+                if (ids.indexOf(player.id) === -1) {
+                    ids.push(player.id);
                 }
             };
 
 
             var sendList = function() {
-                xhr('POST', '/matchmaking', {players: players}, function() {
+                xhr('POST', '/matchmaking', {ids: ids}, function() {
                     var elements = document.getElementsByClassName('added');
-                    // l'assignation est bizarre : elements est recalcule tout le temps sans que je lui demande
-                    console.log("test");
-                    for(var j = 0; j < elements.length; j++) {
-                        console.log(elements)
-                        console.log(j);
-                        console.log("lol");
-                        console.log(elements[j]);
-                        elements[j].className='joueur';
+                    //backwards loop as elements is updated dynamically
+                    for(var j = elements.length-1; j >= 0; --j) {
+                        elements[j].classList.remove('added');
                     }
                 }, function (error, data) {
                     // error handling
