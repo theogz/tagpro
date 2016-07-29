@@ -133,11 +133,9 @@ app.post('/trueskill', auth, function (req, res) {
 
 app.post('/matchmaking', function(req, res) {
     var ids = req.body.ids;
-    console.log(ids);
-    var options = {
-        args: [ids]
-    };
+    var options = {args: ids, mode:'json'};
     PythonShell.run('matchmaking.py', options, function(err, results) {
+        if (err) throw err;
         console.log('results: %j', results);
         res.send(results);
     });
