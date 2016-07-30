@@ -111,8 +111,7 @@
                         li.classList.add('joueur');
                         li.id = player.id;
                         li.addEventListener('click', function () {
-                            addPlayerToPlayerList(player);
-                            li.classList.add('added');
+                            updatePlayerToPlayerList(player, li);
                         }, false);
                         document.getElementById('joueurs').appendChild(li);
                     })(list[i]);
@@ -126,9 +125,14 @@
             loadPlayerList();
 
             // Add player to player list
-            var addPlayerToPlayerList = function(player) {
+            var updatePlayerToPlayerList = function(player, li) {
                 if (ids.indexOf(player.id) === -1) {
                     ids.push(player.id);
+                    li.classList.add('added');
+                }
+                else {
+                    ids.splice(ids.indexOf(player.id), 1);
+                    li.classList.remove('added');
                 }
             };
 
