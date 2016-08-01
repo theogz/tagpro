@@ -84,6 +84,9 @@
             Réinitialiser les joueurs
         </div>
 
+        <div id="quality" style="clear:both;float:left;margin-top:25px;display:none">
+            Qualité du match :
+        </div>
 
         <script type="text/javascript">
 
@@ -162,6 +165,16 @@
                     data[1].forEach(function (id) {
                         document.getElementById(id).classList.add('blu');
                     });
+
+                    // Match quality
+
+                    document.getElementById('quality').style.display = "block";
+                    var div = document.createElement('div');
+                    div.innerHTML = ' '.concat(Math.floor(data[2]*100).toString()).concat(' %');
+                    div.style.cssFloat = 'left';
+                    div.style.marginTop = '25px';
+                    document.body.appendChild(div);
+
                 }, function (error, data) {
                     // error handling
                     console.log(error, data);
