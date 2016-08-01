@@ -48,7 +48,7 @@ cur.execute("INSERT INTO players (name) VALUES (%s);", ["Bouboule"])
 cur.execute("INSERT INTO players (name) VALUES (%s);", ["EkiPro"])
 cur.execute("INSERT INTO players (name) VALUES (%s);", ["EDD"])
 cur.execute("INSERT INTO players (name) VALUES (%s);", ["Jackeki"])
-
+cur.execute("INSERT INTO players (name) VALUES (%s);", ["Ilyesso"])
 
 # Make sure we have all the players
 cur.execute("SELECT count(*) FROM players;")
