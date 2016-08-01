@@ -10,6 +10,10 @@
                 font-family: Roboto;
             }
 
+            a {
+                text-decoration: none;
+            }
+
             #joueurs {
               padding: 0;
             }
@@ -85,19 +89,19 @@
         <div style="clear: both; display: none;" id="done">Le match a été enregistré et le classement mis à jour.</div>
 
 
-        <div class="button" style="clear:both;float:left;margin-top:20px;background-color:hsl(120,50%,50%)" onclick="window.location='/matchmaking.html'">
+        <a class="button" style="clear:both;float:left;margin-top:20px;background-color:hsl(120,50%,50%)" href='/matchmaking.html'>
             Matchmaking (new!)
-        </div>
+        </a>
 
-        <div class="button" style="float:left;margin-top:20px" onclick="window.location='/graphs.html'">
+        <a class="button" style="float:left;margin-top:20px" href="/graphs.html">
             Courbe de distribution des niveaux
-        </div>
-        <div class="button" style="float:left;margin-top:20px;margin-left:10px" onclick="window.location='/ranks.html'">
+        </a>
+        <a class="button" style="float:left;margin-top:20px;margin-left:10px" href="/ranks.html">
             Voir le classement des joueurs
-        </div>
-        <div class="button" style="float:left;margin-top:20px;margin-left:10px" onclick="window.location='/matchs.html'">
+        </a>
+        <a class="button" style="float:left;margin-top:20px;margin-left:10px" href="/matchs.html">
             Matchs récents
-        </div>
+        </a>
 
         <script type="text/javascript">
             var teams = { '1': [], '2': []};
