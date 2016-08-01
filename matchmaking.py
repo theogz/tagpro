@@ -21,20 +21,17 @@ conn = psycopg2.connect(host=os.getenv('PG_HOST', 'localhost'), port=os.getenv('
 # conn = psycopg2.connect(os.environ['DATABASE_URL'])
 cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
-sql_joueurs = "SELECT * FROM players;"
+try: 
+    sql_joueurs = "SELECT * FROM players WHERE id IN %*s;" % (len(sys.argv[1:]), (tuple(int(ids) for ids in sys.argv[1:])))
+except IndexError:
+    sql_joueurs = "SELECT * FROM players;"
 
 table_joueurs = pd.read_sql(sql_joueurs, conn, coerce_float=True, params=None)
-liste_joueurs = table_joueurs["id"].tolist()
+pool_joueurs = table_joueurs["id"].tolist()
 niveau_joueurs = [float(x)/100 for x in table_joueurs["mmr"].tolist()]
 confiance_joueurs = [float(x)/100 for x in table_joueurs["sigma"].tolist()]
 rating_joueurs = [ts.Rating(x,y) for x,y in zip(niveau_joueurs, confiance_joueurs)]
-Caracteristiques = dict(zip(liste_joueurs, rating_joueurs))
-
-
-try:
-    pool_joueurs = [int(ids) for ids in sys.argv[1:]]
-except IndexError:
-    pool_joueurs = liste_joueurs[7:]
+Caracteristiques = dict(zip(pool_joueurs, rating_joueurs))
 
 
 
