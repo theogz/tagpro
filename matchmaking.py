@@ -59,3 +59,4 @@ conn.close()
 
 print Best_team_1
 print Best_team_2
+print Best_quality
