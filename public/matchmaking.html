@@ -114,11 +114,11 @@
 
             // Add player to player list
             var updatePlayerToPlayerList = function(player, li) {
-                if (ids.indexOf(player.id) === -1) {
+                if ((ids.indexOf(player.id) === -1)&(ids.length<12)) {
                     ids.push(player.id);
                     li.classList.add('added');
                 }
-                else {
+                else if (ids.indexOf(player.id) !== -1){
                     ids.splice(ids.indexOf(player.id), 1);
                     li.classList.remove('added');
                 }
@@ -145,8 +145,13 @@
 
                     // Match quality
 
+
+                    [].forEach.call(document.getElementsByClassName('qualityScore'), function (div) {
+                        div.style.display = "none";
+                    });
                     document.getElementById('quality').style.display = "block";
                     var div = document.createElement('div');
+                    div.className = 'qualityScore';
                     div.innerHTML = ' '.concat(Math.floor(data[2]*100).toString()).concat(' %');
                     div.style.cssFloat = 'left';
                     div.style.marginTop = '25px';
