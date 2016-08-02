@@ -121,6 +121,8 @@
                 else if (ids.indexOf(player.id) !== -1){
                     ids.splice(ids.indexOf(player.id), 1);
                     li.classList.remove('added');
+                    li.classList.remove('red');
+                    li.classList.remove('blu');
                 }
             };
 
@@ -133,6 +135,11 @@
                         elements[j].classList.remove('added');
                     }
 
+
+                    [].forEach.call(document.getElementsByClassName('joueur'), function(id) {
+                        id.classList.remove('red');
+                        id.classList.remove('blu');
+                    });
                     // Team 1 in RED
                     data[0].forEach(function (id) {
                         document.getElementById(id).classList.add('red');
