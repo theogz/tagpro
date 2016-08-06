@@ -45,9 +45,15 @@
         </a>
         <h2 style="clear:both;">Sélectionner les joueurs présents :</h2>
 
+        <div style="clear:both;float:left">
+            Nombre de joueurs :&nbsp 
+        </div>
 
+        <div id="playerCount" style="float:left">
+            0 <!-- updated every time a player is clicked -->
+        </div>
 
-        <div>
+        <div style="clear:both">
             <ul id="joueurs">
                 <!-- Will be completed with the list of players from the server -->
             </ul>
@@ -124,6 +130,7 @@
                     li.classList.remove('red');
                     li.classList.remove('blu');
                 }
+                document.getElementById('playerCount').innerHTML = ids.length
             };
 
 
