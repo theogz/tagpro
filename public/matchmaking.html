@@ -186,6 +186,11 @@
                 for (var j = 0; j < elements.length; j++) {
                     elements[j].className = 'joueur';
                 };
+                [].forEach.call(document.getElementsByClassName('qualityScore'), function (div) {
+                        div.style.display = "none";
+                    });
+                document.getElementById('quality').style.display = "none";
+                document.getElementById('playerCount').innerHTML = ids.length;
             };
 
             var displayCount = function() {
