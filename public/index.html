@@ -151,8 +151,14 @@
 
             // Send match data to server
             var sendMatch = function () {
-                var scoreTeam1 = parseInt(window.prompt('Score équipe rouge'));
-                var scoreTeam2 = parseInt(window.prompt('Score équipe bleue'));
+                do {
+                    var scoreTeam1 = parseInt(window.prompt("Score équipe rouge"));
+                } while(isNaN(scoreTeam1) || scoreTeam1 > 5 || scoreTeam1 < 0);
+                do {
+                    var scoreTeam2 = parseInt(window.prompt("Score équipe bleue"));
+                } while(isNaN(scoreTeam2) || scoreTeam2 > 5 || scoreTeam2 < 0);                
+                // var scoreTeam1 = parseInt(window.prompt('Score équipe rouge'));
+                // var scoreTeam2 = parseInt(window.prompt('Score équipe bleue'));
                 xhr('POST', '/trueskill', {teams: teams, score: {'1': scoreTeam1, '2': scoreTeam2}}, function () {
                     document.getElementById('buttonTeam2').style.display = 'none';
                     document.getElementById('done').style.display = 'block';
