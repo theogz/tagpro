@@ -65,7 +65,7 @@ app.get('/playerList', function (req, res) {
     pg_client.connect(function(err) {
         if(err) return console.error('could not connect to postgres', err);
 
-        pg_client.query('SELECT * FROM players ORDER by mmr', function (err, result) {
+        pg_client.query('SELECT * FROM players ORDER by (mmr-3*sigma)', function (err, result) {
             if(err) return console.error('could not query db', err);
 
             var players = result.rows;
