@@ -25,7 +25,10 @@
         <h2 style="clear:both;margin-top:0px">Classement :</h2>
         <div>
             <table id="matchs" style="width:100%;">
-                <tr style="font-weight: bold;">
+                <tr style="font-weight: bold;">                    
+                    <td>
+                        Classement
+                    </td>
                     <td>
                         Joueur
                     </td>
@@ -74,14 +77,17 @@
                         var td1 = document.createElement('td');
                         var td2 = document.createElement('td');
                         var td3 = document.createElement('td');
-                        td1.innerHTML = players.name;
-                        td2.innerHTML = players.mmr-3*players.sigma;
-                        td3.innerHTML = players.mmr;
+                        var td4 = document.createElement('td');
+                        td1.innerHTML = i+1;
+                        td2.innerHTML = players.name;
+                        td3.innerHTML = players.mmr-3*players.sigma;
+                        td4.innerHTML = players.mmr;
 
                         document.getElementById('matchs').appendChild(tr);
                         document.getElementById('matchs').appendChild(td1);
                         document.getElementById('matchs').appendChild(td2);
                         document.getElementById('matchs').appendChild(td3);
+                        document.getElementById('matchs').appendChild(td4);
                     })(list[list.length-i-1]);
 
                 }, function (error, data) {
