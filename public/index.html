@@ -6,8 +6,7 @@
         <link href="/imgs/red_flag.png" rel="icon" type="image/x-icon">
         <link rel="stylesheet" type="text/css" href="styles.css">
         <style type="text/css">
-
-
+    
 
             .joueur:hover {
                 box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, .5);
@@ -22,22 +21,28 @@
                 box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, .5);
             }
 
-            .button_red{
-                background-color: hsl(0,50%,50%);
-                color:white;
+            table, th, td {
+                border: 1px solid black;
+                border-collapse: collapse;
+            }
+            th, td {
+                padding: 5px;
+                text-align: left;
             }
 
-            .button_blue{
-                background-color: hsl(240,50%,50%);
-                color:white;
+            .red {
+                background-color: hsl(0, 50%, 50%);
             }
 
+            .blu {
+                background-color: hsl(240, 50%, 50%);
+            }
         </style>
     </head>
     <body>
 
-        <a class="button" style="float:left;margin-top:20px;margin-left:10px" href='/matchmaking.html'>
-            Matchmaking
+        <a class="button" style="float:left;margin-top:20px;margin-left:10px" href='/newmatch.html'>
+            Add match
         </a>
 
         <a class="button" style="float:left;margin-top:20px;margin-left:10px" href="/graphs.html">
@@ -49,34 +54,39 @@
         <a class="button" style="float:left;margin-top:20px;margin-left:10px" href="/matchs.html">
             Matchs récents
         </a>
-        <h2>Composition des équipes :</h2>
-        <div>
-            <ul id="joueurs" style="clear:both">
+        <h2>Sélectionner les joueurs présents :</h2>
+
+        <div style="clear:both;float:left;margin-bottom:10px">
+            Nombre de joueurs :&nbsp 
+        </div>
+
+
+        <div id="playerCount" style="float:left">
+            0 <!-- updated every time a player is clicked -->
+
+        </div>
+
+        <div style="clear:both">
+            <ul id="joueurs">
                 <!-- Will be completed with the list of players from the server -->
             </ul>
         </div>
-        <div style="float:left">
-            <p>Team rouge</p>
-            <ul id="team1" style="overflow:hidden">
-            </ul>
-            <div id="buttonTeam1" class="button button_red" onClick="goToTeam2()">Valider équipe rouge</div>
+
+        <div class="button" style="clear:both;float:left;margin-top:20px;background-color:hsl(272,34%,40%);color:white" onclick="sendList()">
+            Générer les équipes
         </div>
-        <div style="float:left">
-            <p>Team bleue</p>
-            <ul id="team2" style="overflow:hidden">
-            </ul>
-            <div id="buttonTeam2" class="button button_blue" onClick="sendMatch()" style="display:none">Valider équipe bleue</div>
+
+        <div class="button" style="float:left;margin-top:20px;background-color:hsl(29,53%,36%);color:white" onclick="resetList()">
+            Réinitialiser les joueurs
         </div>
-        
 
-        <div style="clear: both; display: none;" id="done">Le match a été enregistré et le classement mis à jour.</div>
-
-
+        <div id="quality" style="clear:both;float:left;margin-top:25px;display:none">
+            Qualité du match :
+        </div>
 
         <script type="text/javascript">
-            var teams = { '1': [], '2': []};
-            var currentTeam = '1';
 
+            var ids = [];
             // Simple asynchronous requests to server
             function xhr(method, url, data, callback, errorCB) {
               var req = new XMLHttpRequest()
@@ -106,9 +116,10 @@
                         var li = document.createElement('li');
                         li.innerHTML = player.name;
                         li.classList.add('joueur');
+                        li.id = player.id;
                         li.addEventListener('click', function () {
-                            addPlayerToCurrentTeam(player);
-                            li.classList.add('added');
+                            updatePlayerToPlayerList(player, li);
+                            displayCount();
                         }, false);
                         document.getElementById('joueurs').appendChild(li);
                     })(list[i]);
@@ -121,52 +132,80 @@
 
             loadPlayerList();
 
-            // Add player to team
-            var addPlayerToCurrentTeam = function (player) {
-                // Only add if not already in a team
-                if (teams['1'].indexOf(player) === -1 && teams['2'].indexOf(player) === -1) {
-                    teams[currentTeam].push(player);
-                    refreshTeamsDisplay();
+            // Add player to player list
+            var updatePlayerToPlayerList = function(player, li) {
+                if ((ids.indexOf(player.id) === -1)&(ids.length<12)) {
+                    ids.push(player.id);
+                    li.classList.add('added');
                 }
+                else if (ids.indexOf(player.id) !== -1){
+                    ids.splice(ids.indexOf(player.id), 1);
+                    li.classList.remove('added');
+                    li.classList.remove('red');
+                    li.classList.remove('blu');
+                }
+                document.getElementById('playerCount').innerHTML = ids.length
             };
 
-            // Display teams
-            var refreshTeamsDisplay = function () {
-                for (var i in teams) {
-                    var teamList = document.getElementById('team' + i);
-                    // Clear list
-                    teamList.innerHTML = '';
-                    for (var j in teams[i]) {
-                        // Add player name to list
-                        teamList.innerHTML += '<li>' + teams[i][j].name + '</li>';
+
+            var sendList = function() {
+
+                xhr('POST', '/matchmaking', {ids: ids}, function (data) {
+                    var elements = document.getElementsByClassName('joueur');
+                    for (var j = 0; j < elements.length; j++) {
+                        elements[j].classList.remove('added');
                     }
-                }
-            };
 
-            // Validate team
-            var goToTeam2 = function () {
-                document.getElementById('buttonTeam1').style.display = 'none';
-                document.getElementById('buttonTeam2').style.display = 'inline';
-                currentTeam = '2';
-            };
 
-            // Send match data to server
-            var sendMatch = function () {
-                do {
-                    var scoreTeam1 = parseInt(window.prompt("Score équipe rouge"));
-                } while(isNaN(scoreTeam1) || scoreTeam1 > 5 || scoreTeam1 < 0);
-                do {
-                    var scoreTeam2 = parseInt(window.prompt("Score équipe bleue"));
-                } while(isNaN(scoreTeam2) || scoreTeam2 > 5 || scoreTeam2 < 0);                
-                // var scoreTeam1 = parseInt(window.prompt('Score équipe rouge'));
-                // var scoreTeam2 = parseInt(window.prompt('Score équipe bleue'));
-                xhr('POST', '/trueskill', {teams: teams, score: {'1': scoreTeam1, '2': scoreTeam2}}, function () {
-                    document.getElementById('buttonTeam2').style.display = 'none';
-                    document.getElementById('done').style.display = 'block';
+                    [].forEach.call(document.getElementsByClassName('joueur'), function(id) {
+                        id.classList.remove('red');
+                        id.classList.remove('blu');
+                    });
+                    // Team 1 in RED
+                    data[0].forEach(function (id) {
+                        document.getElementById(id).classList.add('red');
+                    });
+
+                    // Team 2 in BLU
+                    data[1].forEach(function (id) {
+                        document.getElementById(id).classList.add('blu');
+                    });
+
+                    // Match quality
+
+
+                    [].forEach.call(document.getElementsByClassName('qualityScore'), function (div) {
+                        div.style.display = "none";
+                    });
+                    document.getElementById('quality').style.display = "block";
+                    var div = document.createElement('div');
+                    div.className = 'qualityScore';
+                    div.innerHTML = ' '.concat(Math.floor(data[2]*100).toString()).concat(' %');
+                    div.style.cssFloat = 'left';
+                    div.style.marginTop = '25px';
+                    document.body.appendChild(div);
+
                 }, function (error, data) {
                     // error handling
                     console.log(error, data);
                 });
+            };
+
+            var resetList = function() {
+                ids=[];
+                var elements = document.getElementsByClassName('joueur');
+                for (var j = 0; j < elements.length; j++) {
+                    elements[j].className = 'joueur';
+                };
+                [].forEach.call(document.getElementsByClassName('qualityScore'), function (div) {
+                        div.style.display = "none";
+                    });
+                document.getElementById('quality').style.display = "none";
+                document.getElementById('playerCount').innerHTML = ids.length;
+            };
+
+            var displayCount = function() {
+                document.getElementById('playerCount').innerHTML = ids.length;
             };
 
             (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -179,6 +218,5 @@
 
 
         </script>
-
     </body>
 </html>
