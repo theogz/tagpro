@@ -49,6 +49,14 @@ cur.execute("INSERT INTO players (name) VALUES (%s);", ["EkiPro"])
 cur.execute("INSERT INTO players (name) VALUES (%s);", ["EDD"])
 cur.execute("INSERT INTO players (name) VALUES (%s);", ["Jackeki"])
 cur.execute("INSERT INTO players (name) VALUES (%s);", ["Ilyesso"])
+cur.execute("INSERT INTO players (name) VALUES (%s);", ["Ekigui"])
+cur.execute("INSERT INTO players (name) VALUES (%s);", ["VelSer"])
+cur.execute("INSERT INTO players (name) VALUES (%s);", ["NoMa"])
+cur.execute("INSERT INTO players (name) VALUES (%s);", ["Albert"])
+cur.execute("INSERT INTO players (name) VALUES (%s);", ["xksusha"])
+cur.execute("INSERT INTO players (name) VALUES (%s);", ["Julien"])
+cur.execute("INSERT INTO players (name) VALUES (%s);", ["raph"])
+
 
 # Make sure we have all the players
 cur.execute("SELECT count(*) FROM players;")
