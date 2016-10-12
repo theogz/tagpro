@@ -111,7 +111,7 @@ app.post('/trueskill', auth, function (req, res) {
     pg_client.connect(function(err) {
         if(err) return console.error('could not connect to postgres', err);
 
-        pg_client.query('INSERT INTO matchs (team1, team2, score1, score2, computed, added_by) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id', [team1ids, team2ids, scoreTeam1, scoreTeam2, matchComputed, season, user_logged], function (err, result) {
+        pg_client.query('INSERT INTO matchs (team1, team2, score1, score2, computed, season, added_by) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id', [team1ids, team2ids, scoreTeam1, scoreTeam2, matchComputed, season, user_logged], function (err, result) {
             if(err) return console.error('could not query db', err);
 
             console.log('Added match with id', result.rows[0]['id']);
