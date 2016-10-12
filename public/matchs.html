@@ -39,6 +39,9 @@
                     <td>
                         Ajouté par
                     </td>
+                    <td>
+                        Saison n°
+                    </td>
                 </tr>
                 <!-- Will be completed with the list of matchs from the server -->
             </table>
@@ -79,16 +82,19 @@
                         var td2 = document.createElement('td');
                         var td3 = document.createElement('td');
                         var td4 = document.createElement('td');
+                        var td5 = document.createElement('td');
                         td1.innerHTML = match.id;
                         td2.innerHTML = match.score1;
                         td3.innerHTML = match.score2;
                         td4.innerHTML = match.added_by;
+                        td5.innerHTML = match.season;
 
                         document.getElementById('matchs').appendChild(tr);
                         document.getElementById('matchs').appendChild(td1);
                         document.getElementById('matchs').appendChild(td2);
                         document.getElementById('matchs').appendChild(td3);
                         document.getElementById('matchs').appendChild(td4);
+                        document.getElementById('matchs').appendChild(td5);
                     })(list[list.length-i-1]);
 
                 }, function (error, data) {
