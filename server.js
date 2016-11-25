@@ -48,7 +48,7 @@ var BASIC_AUTH = [
 
 var pg_string = process.env.DATABASE_URL || 'postgres://' + config.user + ':' + config.password + '@' + config.host + '/' + config.database;
 
-var season = 2;
+var season = 3;
 
 // needed to parse JSON data from client
 var bodyParser = require('body-parser');
