@@ -67,6 +67,10 @@ cur.execute("DROP TABLE matchs")
 cur.execute("CREATE TABLE matchs (id serial PRIMARY KEY, team1 integer[], team2 integer[], score1 integer, score2 integer, computed integer, season integer, added_by varchar);")
 # cur.execute("INSERT INTO matchs (team1, team2, score1, score2, computed) VALUES (%s, %s, %s, %s, %s);", [[1,2], [3,4], 5, 2, 0])
 
+# Create the table of players in matchs
+cur.execute("DROP TABLE players_in_team;")
+cur.execute("CREATE TABLE players_in_team (id serial PRIMARY KEY, player_id integer, team integer, match_id integer);")
+
 # Make sure we have the match
 # cur.execute("SELECT * FROM matchs;")
 # match = cur.fetchone()

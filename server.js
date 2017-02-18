@@ -2,9 +2,11 @@ var _ = require('underscore');
 
 var express = require('express');
 var app = express();
+app.set('view engine', 'pug');
 
-/*var dotenv = require('dotenv');
-dotenv.load();*/
+// var dotenv = require('dotenv');
+// dotenv.load();
+require('dotenv').config();
 
 var PythonShell = require('python-shell');
 var port = Number(process.env.PORT) || 3000;
@@ -19,7 +21,9 @@ var config = {
     user: process.env.PG_USER || 'postgres',
     password: process.env.PG_PASSWORD || 'psql',
     database: process.env.PG_DB || 'tagpro',
-    port: process.env.PG_PORT || 5432
+    port: process.env.PG_PORT || 5432,
+    max: 16,
+    idleTiemoutMillis: 30000,
 };
 
 var BASIC_AUTH = [
@@ -46,6 +50,7 @@ var BASIC_AUTH = [
 ];
 
 
+
 var pg_string = process.env.DATABASE_URL || 'postgres://' + config.user + ':' + config.password + '@' + config.host + '/' + config.database;
 
 var season = 4;
@@ -56,18 +61,51 @@ app.use(bodyParser.json());
 
 
 
-
 app.use(express.static('public'));
+
+identi = "1";
+
+query_players = "select * FROM players where id="+identi+";"
+query_matchs = "select * from matchs m inner join (select match_id, team from players_in_team where player_id="+identi+") t on (m.id = t.match_id);"
+
+
+/* GET the map page */
+app.get('/players/:identi', function(req, res) {
+    var cli = new pg.Pool(config); // Setup our Postgres Client
+
+    cli.connect(function(err) {
+        if(err) return console.error('cant connect to pg', err);
+
+        var matchs_query_result = {};
+        var rowss=[];
+
+        cli.query(query_players, function (err, result) {
+            if(err) return console.error('random error db', err);
+            console.log(result.rows[0]);
+            rowss.push(result.rows[0]);
+        });
+
+        console.log(rowss);
+
+        cli.query(query_matchs, function (err, result) {
+            if(err) return console.error('team query error db', err);
+            matchs_query_result = result.rows[0];
+        });
+        res.render('players_template', {
+            title: "Player details", // Give a title to our page
+            matchs_table: matchs_query_result
+        });
+    });
+});
 
 
 app.get('/playerList', function (req, res) {
     var pg_client = new pg.Client(pg_string);
     pg_client.connect(function(err) {
-        if(err) return console.error('could not connect to postgres', err);
+        if(err) return console.error('could not connect to pool', err);
 
         pg_client.query('SELECT * FROM players ORDER by (mmr-3*sigma)', function (err, result) {
             if(err) return console.error('could not query db', err);
-
             var players = result.rows;
             res.send(players);
             return pg_client.end();
@@ -86,6 +124,7 @@ var auth = function (req,res,next){
     if(!user || !user.name || !user.pass){
         return unauthorized(res);
     };
+
     user_logged = user.name;
     for (var i = 0; i<BASIC_AUTH.length; i++){
         if (user.name == BASIC_AUTH[i].index_username && user.pass == BASIC_AUTH[i].index_password){
@@ -94,7 +133,6 @@ var auth = function (req,res,next){
     };
     return unauthorized(res);
 };
-
 
 
 app.post('/trueskill', auth, function (req, res) {
@@ -107,15 +145,28 @@ app.post('/trueskill', auth, function (req, res) {
     team1ids = _.map(team1, function (player) { return player.id });
     team2ids = _.map(team2, function (player) { return player.id });
 
-    var pg_client = new pg.Client(pg_string);
-    pg_client.connect(function(err) {
-        if(err) return console.error('could not connect to postgres', err);
 
-        pg_client.query('INSERT INTO matchs (team1, team2, score1, score2, computed, season, added_by) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id', [team1ids, team2ids, scoreTeam1, scoreTeam2, matchComputed, season, user_logged], function (err, result) {
+    var pg_pool = new pg.Pool(config);
+    pg_pool.connect(function(err) {
+        if(err) return console.error('could not connect to pool', err);
+
+
+        pg_pool.query('INSERT INTO matchs (team1, team2, score1, score2, computed, season, added_by) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id', [team1ids, team2ids, scoreTeam1, scoreTeam2, matchComputed, season, user_logged], function (err, result) {
             if(err) return console.error('could not query db', err);
 
             console.log('Added match with id', result.rows[0]['id']);
             res.send({"message": "OK"});
+
+            for(var i = 0; i<team1ids.length; i++){
+                pg_pool.query('INSERT INTO players_in_team (player_id, team, match_id) VALUES ($1, $2, $3) RETURNING id', [team1ids[i], "1", result.rows[0]['id']], function (err, result) {
+                    if(err) return console.error('could not query db111', err);
+                });
+            };
+            for(var i = 0; i<team2ids.length; i++){
+                pg_pool.query('INSERT INTO players_in_team (player_id, team, match_id) VALUES ($1, $2, $3) RETURNING id', [team2ids[i], "2", result.rows[0]['id']], function (err, result){
+                    if(err) return console.error('could not query db222', err);
+                });
+            };
 
             PythonShell.run('main.py', function (err, results) {
                 if (err) throw err;
@@ -126,7 +177,6 @@ app.post('/trueskill', auth, function (req, res) {
                     console.log('Graph updated');
                 });
             });
-            return pg_client.end();
         });
     });
 });
@@ -146,7 +196,7 @@ app.get('/matchList', function(req, res) {
     pg_client.connect(function(err) {
         if(err) return console.error('could not connect to postgres', err);
 
-        pg_client.query('SELECT * FROM matchs ORDER BY id', function (err, result) {
+        pg_client.query('SELECT * FROM matchs ORDER BY id limit 100', function (err, result) {
             if(err) return console.error('could not query db', err);
 
             var matchs = result.rows;
