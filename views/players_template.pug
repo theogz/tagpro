@@ -5,16 +5,59 @@ html
     meta(charset='utf-8')
     link(href='/imgs/red_flag.png', rel='icon', type='image/x-icon')
     link(rel='stylesheet', type='text/css', href='/styles.css')
+    link(rel='stylesheet', type='text/css', href='/simple-grid.min.css')
     script(type='text/javascript', src='/jquery-3.1.1.min.js')
+    script(type='text/javascript', src='/moment-with-locales.js')
+    style.
+      td[data-res="vic"] {color:green;}
+      td[data-res="nul"] {color:purple;}
+      td[data-res="def"] {color:red;}
   body
     a.button(style='clear:both;float:left;margin-top:20px;margin-left:10px;margin-bottom:20px;', href='/')
       | Accueil
     h2(id='playerName' style='clear:both;margin-top:0px')
-    h3(id='mmr' style='clear:both;margin-top:0px')
+    h3(id='rank' style='clear:both;margin-top:0px')
+    .container
+      .row
+        .col-8
+          table#historique(width="100%")
+            tr
+              td
+                | Date
+              td
+                | Score
+              td
+                | Résultat
     script(type='text/javascript').
-      var myData = !{JSON.stringify(matchs_table)};
-      $('#playerName').text(myData.team1);
-      $('#mmr').text('Score actuel: '+myData.added_by)
+      var matchs_table = !{JSON.stringify(matchs_table)};
+      var player_stats = !{JSON.stringify(player_stats)};
+      moment.locale('fr');
+      $('#playerName').append(player_stats.name);
+      for (i = 0; i < matchs_table.length; i++) {
+      };
+      $('#rank').append('Classement actuel : '+player_stats.rank)
+      var loadMatchsList = function(){
+      for (var i = 0 ; i<matchs_table.length ; i++){
+      var tr = document.createElement('tr');
+      var td_date = document.createElement('td')
+      td_date.innerHTML = moment(matchs_table[i].added_at.toString()).format('ddd LLL');
+      var td_res = document.createElement('td')
+      var td_score = document.createElement('td')
+      if ((matchs_table[i].score2>matchs_table[i].score1 & matchs_table[i].team === 2)|(matchs_table[i].score1>matchs_table[i].score2 & matchs_table[i].team === 1)) {
+      td_res.innerHTML = "Victoire"; td_score.dataset.res = 'vic'
+      } else if ((matchs_table[i].score2>matchs_table[i].score1 & matchs_table[i].team === 1)|(matchs_table[i].score1>matchs_table[i].score2 & matchs_table[i].team === 2)) {
+      td_res.innerHTML = "Défaite"; td_score.dataset.res = 'def'
+      } else { td_res.innerHTML = "Nul" ; td_score.dataset.res = 'nul'}
+      
+      td_score.innerHTML = matchs_table[i].score1.toString() + '-' + matchs_table[i].score2.toString()
+      td_score.style.fontWeight = 'bold';
+      document.getElementById('historique').appendChild(tr);
+      document.getElementById('historique').appendChild(td_date);
+      document.getElementById('historique').appendChild(td_score);
+      document.getElementById('historique').appendChild(td_res);
+      }
+      }
+      loadMatchsList();
       // Simple asynchronous requests to server
       function xhr(method, url, data, callback, errorCB) {
       var req = new XMLHttpRequest()
