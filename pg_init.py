@@ -59,7 +59,7 @@ print '%d players added to database' % cur.fetchone()['count']
 # Create the table of matchs and the first match
 cur.execute("DROP TABLE matchs")
 cur.execute("CREATE TABLE matchs (id serial PRIMARY KEY, team1 integer[], team2 integer[], score1 integer, score2 integer, computed integer, season integer, added_at timestamp DEFAULT current_timestamp, added_by varchar);")
-# cur.execute("INSERT INTO matchs (team1, team2, score1, score2, computed) VALUES (%s, %s, %s, %s, %s);", [[1,2], [3,4], 5, 2, 0])
+
 
 # Create the table of players in matchs
 cur.execute("DROP TABLE players_in_team;")

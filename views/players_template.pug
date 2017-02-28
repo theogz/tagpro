@@ -1,11 +1,12 @@
 doctype
 html
   head
-    title Ranking tagpro
+    title #{title}
     meta(charset='utf-8')
     link(href='/imgs/red_flag.png', rel='icon', type='image/x-icon')
     link(rel='stylesheet', type='text/css', href='/styles.css')
     link(rel='stylesheet', type='text/css', href='/simple-grid.min.css')
+    link(rel='stylesheet', type='text/css', href='/pure-min.css')
     script(type='text/javascript', src='/jquery-3.1.1.min.js')
     script(type='text/javascript', src='/moment-with-locales.js')
     style.
@@ -15,23 +16,30 @@ html
   body
     a.button(style='clear:both;float:left;margin-top:20px;margin-left:10px;margin-bottom:20px;', href='/')
       | Accueil
-    h2(id='playerName' style='clear:both;margin-top:0px')
-    h3(id='rank' style='clear:both;margin-top:0px')
+    h2(id='playerName' style='clear:both;margin-top:0px;padding-left:20px')
+    h3(id='rank' style='clear:both;margin-top:0px;margin-bottom:0px;padding-left:40px')
     .container
       .row
-        .col-8
-          table#historique(width="100%")
-            tr
-              td
-                | Date
-              td
-                | Score
-              td
-                | Résultat
+        .col-12
+          | Derniers matchs :
+      .row
+        .col-12
+          table#historique.pure-table(width='100%')
+            thead
+              tr
+                td
+                  | Id
+                td(width='33%')
+                  | Date
+                td
+                  | Score
+                td
+                  | Résultat
+            tbody
     script(type='text/javascript').
+      moment.locale('fr');
       var matchs_table = !{JSON.stringify(matchs_table)};
       var player_stats = !{JSON.stringify(player_stats)};
-      moment.locale('fr');
       $('#playerName').append(player_stats.name);
       for (i = 0; i < matchs_table.length; i++) {
       };
@@ -39,8 +47,11 @@ html
       var loadMatchsList = function(){
       for (var i = 0 ; i<matchs_table.length ; i++){
       var tr = document.createElement('tr');
-      var td_date = document.createElement('td')
+      if (i%2===1) tr.className += 'pure-table-odd';
+      var td_date = document.createElement('td');
       td_date.innerHTML = moment(matchs_table[i].added_at.toString()).format('ddd LLL');
+      var td_id = document.createElement('td');
+      td_id.innerHTML = matchs_table[i].id;
       var td_res = document.createElement('td')
       var td_score = document.createElement('td')
       if ((matchs_table[i].score2>matchs_table[i].score1 & matchs_table[i].team === 2)|(matchs_table[i].score1>matchs_table[i].score2 & matchs_table[i].team === 1)) {
@@ -51,10 +62,11 @@ html
       
       td_score.innerHTML = matchs_table[i].score1.toString() + '-' + matchs_table[i].score2.toString()
       td_score.style.fontWeight = 'bold';
-      document.getElementById('historique').appendChild(tr);
-      document.getElementById('historique').appendChild(td_date);
-      document.getElementById('historique').appendChild(td_score);
-      document.getElementById('historique').appendChild(td_res);
+      document.getElementById('historique').getElementsByTagName('tbody')[0].appendChild(tr);
+      tr.appendChild(td_id);
+      tr.appendChild(td_date);
+      tr.appendChild(td_score);
+      tr.appendChild(td_res);
       }
       }
       loadMatchsList();

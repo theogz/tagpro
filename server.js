@@ -4,8 +4,6 @@ var express = require('express');
 var app = express();
 app.set('view engine', 'pug');
 
-// var moment = require('moment');
-
 // var dotenv = require('dotenv');
 // dotenv.load();
 require('dotenv').config();
@@ -75,21 +73,19 @@ app.get('/players/:id', function(req, res) {
 
         cli.query(query, function (err, result) {
             if(err) return console.error('random error db', err);
-
             if(!result.rows || result.rows.length === 0) {res.status(404).send('Erard 404 : ce joueur n\'existe pas'); return console.log('Player ID not found', player_id)};
 
             var player = result.rows[0];
 
-            var query = "SELECT * FROM matchs m INNER JOIN (SELECT match_id, team FROM players_in_team WHERE player_id="+player_id+") t ON m.id = t.match_id ORDER BY added_at DESC;"
+            var query = "SELECT * FROM matchs m INNER JOIN (SELECT match_id, team FROM players_in_team WHERE player_id="+player_id+") t ON m.id = t.match_id ORDER BY added_at DESC LIMIT 25;"
 
             cli.query(query, function (err, result) {
                 if(err) return console.error('random error db', err);
 
-                if(!result.rows || result.rows.length === 0) {res.status(500).send('No matchs found'); return console.log('No match found', player_id);};
+                if(!result.rows || result.rows.length === 0) {var matchs=[];res.render('players_template', {title:"Fiche de "+player.name, player_stats: player, matchs_table:matchs}); return console.log('No match found', player_id);};
                 var matchs = result.rows;
-                
                 res.render('players_template', {
-                    title: "Player details",
+                    title: player.name,
                     player_stats: player,
                     matchs_table: matchs
                 });
@@ -104,7 +100,7 @@ app.get('/playerList', function (req, res) {
     pg_pool.connect(function(err) {
         if(err) return console.error('could not connect to pool', err);
 
-        pg_pool.query('SELECT * FROM players ORDER by (mmr-3*sigma)', function (err, result) {
+        pg_pool.query('SELECT * FROM players ORDER by (mmr-3*sigma) desc', function (err, result) {
             if(err) return console.error('could not query db', err);
             var players = result.rows;
             res.send(players);
@@ -133,6 +129,20 @@ var auth = function (req,res,next){
     return unauthorized(res);
 };
 
+app.post('/addplayer', auth, function(req, res){
+    var player_name = req.body.player_name;
+    var pg_pool = new pg.Pool(config);
+    pg_pool.connect(function(err) {
+        if(err) return console.error('could not connect to pool', err);
+
+        pg_pool.query("INSERT INTO players (name) SELECT ($1) WHERE NOT EXISTS (SELECT 1 from players where name = '"+player_name+"' ) RETURNING id", [player_name], function (err, result) {
+            if(err) return console.error('could not connect to poolish', err);
+            if (result.rows[0]) {
+                console.log('Added player with id', result.rows[0]['id']);res.send({"message": "OK"});
+            } else return res.status(404).send('Player already in database');
+        });
+    });
+});
 
 app.post('/trueskill', auth, function (req, res) {
     var team1 = req.body.teams['1'];
@@ -195,7 +205,7 @@ app.get('/matchList', function(req, res) {
     pg_pool.connect(function(err) {
         if(err) return console.error('could not connect to postgres', err);
 
-        pg_pool.query('SELECT * FROM matchs ORDER BY id limit 100', function (err, result) {
+        pg_pool.query('SELECT * FROM matchs ORDER BY id desc limit 100', function (err, result) {
             if(err) return console.error('could not query db', err);
 
             var matchs = result.rows;
