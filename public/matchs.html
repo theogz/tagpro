@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Ranking tagpro</title>
+        <title>Matchs récents</title>
         <meta charset="utf-8">
         <link href="/imgs/red_flag.png" rel="icon" type="image/x-icon">
         <link rel="stylesheet" type="text/css" href="styles.css">
+        <link rel="stylesheet" type="text/css" href="/pure-min.css">
+        <link rel="stylesheet" type="text/css" href="/simple-grid.min.css">
+        <script type='text/javascript' src='/moment-with-locales.js'></script>
         <style type="text/css">
     
             table, th, td {
@@ -23,34 +26,42 @@
             Accueil
         </a>
 
-        <h2 style="clear:both;margin-top:0px;">Matchs récents :</h2>
-        <div>
-            <table id="matchs" style="width:100%;">
-                <tr style="font-weight: bold;">
-                    <td style="width:5%">
-                        Match n°
-                    </td>
-                    <td>
-                        Score Team Rouge
-                    </td>
-                    <td>
-                        Score Team Bleue
-                    </td>
-                    <td>
-                        Ajouté par
-                    </td>
-                    <td>
-                        Saison n°
-                    </td>
-                </tr>
-                <!-- Will be completed with the list of matchs from the server -->
-            </table>
+        <div class="container">
+            <div class="col-12">
+                <table id="matchs" class="pure-table" style="width:100%;">
+                    <thead>
+                        <tr style="font-weight: bold;">
+                            <td width="15%">
+                                Match n°
+                            </td>
+                            <td>
+                                Team rouge
+                            </td>
+                            <td>
+                                Team bleue
+                            </td>
+                            <td width="30%">
+                                Date
+                            </td>                            
+                            <td>
+                                Par
+                            </td>
+                            <td>
+                                Saison
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Will be completed with the list of matchs from the server -->
+                    </tbody>
+                </table>
+            </div>
         </div>        
 
 
 
         <script type="text/javascript">
-
+            moment.locale('fr');
             // Simple asynchronous requests to server
             function xhr(method, url, data, callback, errorCB) {
               var req = new XMLHttpRequest()
@@ -78,23 +89,27 @@
 
                     for (var i = 0; i < list.length; i++) (function (match) {
                         var tr = document.createElement('tr');
+                        if (i%2===1) tr.className += 'pure-table-odd';
                         var td1 = document.createElement('td');
                         var td2 = document.createElement('td');
                         var td3 = document.createElement('td');
                         var td4 = document.createElement('td');
                         var td5 = document.createElement('td');
+                        var td6 = document.createElement('td');
                         td1.innerHTML = match.id;
                         td2.innerHTML = match.score1;
                         td3.innerHTML = match.score2;
-                        td4.innerHTML = match.added_by;
-                        td5.innerHTML = match.season;
+                        td4.innerHTML = moment(match.added_at.toString()).format('ddd LLL');
+                        td5.innerHTML = match.added_by;
+                        td6.innerHTML = match.season;
 
-                        document.getElementById('matchs').appendChild(tr);
-                        document.getElementById('matchs').appendChild(td1);
-                        document.getElementById('matchs').appendChild(td2);
-                        document.getElementById('matchs').appendChild(td3);
-                        document.getElementById('matchs').appendChild(td4);
-                        document.getElementById('matchs').appendChild(td5);
+                        document.getElementById('matchs').getElementsByTagName('tbody')[0].appendChild(tr);
+                        tr.appendChild(td1);
+                        tr.appendChild(td2);
+                        tr.appendChild(td3);
+                        tr.appendChild(td4);
+                        tr.appendChild(td5);
+                        tr.appendChild(td6);
                     })(list[i]);
 
                 }, function (error, data) {
