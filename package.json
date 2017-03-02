@@ -9,6 +9,7 @@
     "dotenv": "^2.0.0",
     "express": "^4.13.4",
     "pg": "*",
+    "pug": "^0.1.0",
     "python-shell": "^0.3.0",
     "r-script": "^0.0.3",
     "underscore": "^1.8.3"

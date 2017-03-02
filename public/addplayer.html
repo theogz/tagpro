@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Ranking tagpro</title>
+        <title>Ajout de joueur</title>
         <meta charset="utf-8">
         <link href="/imgs/red_flag.png" rel="icon" type="image/x-icon">
         <link rel="stylesheet" type="text/css" href="styles.css">
@@ -14,8 +14,8 @@
 
         <h2 style="clear:both;margin-top:0px;">Entrer le nom du joueur à ajouter :</h2>
         <div style="clear:both;float:left;padding-left:50px;">
-            <input type="text" id="player-to-submit">
-            <button onclick="addPlayer()">Ajouter</button>
+            <input type="text" id="player-to-submit" onKeyPress="return addPlayer(event)">
+            <button onclick="addPlayer(event)">Ajouter</button>
             <div style="clear: both; display: none;" id="done">Le joueur a bien été ajouté.</div>
         </div>        
 
@@ -43,14 +43,16 @@
               }
             };
 
-            var addPlayer = function(){
-                player_name = document.getElementById('player-to-submit').value;
-                if(player_name) {
-                    xhr('POST', '/addplayer', {player_name: player_name}, function() {
-                        document.getElementById('done').style.display = 'block';
-                    }, function(error, data){
-                        console.log(error, data);
-                    });
+            var addPlayer = function(e){
+                if ( e && (e.keyCode == 13 || e.type==="click") ){
+                    player_name = document.getElementById('player-to-submit').value;
+                    if(player_name) {
+                        xhr('POST', '/addplayer', {player_name: player_name}, function() {
+                            document.getElementById('done').style.display = 'block';
+                        }, function(error, data){
+                            console.log(error, data);
+                        });
+                    };
                 };
             };
 

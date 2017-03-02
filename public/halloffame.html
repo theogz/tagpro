@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Ranking tagpro</title>
+        <title>Palmarès</title>
         <meta charset="utf-8">
         <link href="/imgs/red_flag.png" rel="icon" type="image/x-icon">
         <link rel="stylesheet" type="text/css" href="styles.css">
+        <link rel="stylesheet" type="text/css" href="/pure-min.css">
+        <link rel="stylesheet" type="text/css" href="/simple-grid.min.css">        
         <style type="text/css">
     
             table, th, td {
@@ -15,6 +17,7 @@
                 padding: 5px;
                 text-align: left;
             }
+
         </style>
     </head>
     <body>
@@ -23,54 +26,59 @@
             Accueil
         </a>
 
-        <h2 style="clear:both;margin-top:0px;">Vainqueurs :</h2>
-        <div>
-            <table id="matchs" style="width:100%;">
-                <tr style="font-weight: bold;">
-                    <td style="width:10%">
-                        Saison n°
-                    </td>
-                    <td>
-                        Vainqueur
-                    </td>
-                    <td>
-                        Dauphin
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        1
-                    </td>
-                    <td>
-                        R0xx0r
-                    </td>
-                    <td>
-                        Ekisomox
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        2
-                    </td>
-                    <td>
-                        Hashtag_Yolo
-                    </td>
-                    <td>
-                        CousinVic
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        3
-                    </td>
-                    <td>
-                        Hashtag_Yolo
-                    </td>
-                    <td>
-                        Sniper
-                    </td>
-                </tr>
-            </table>
+        <div class="container">
+            <div class="col-12">
+                <table id="matchs" class="pure-table" style="width:100%;">
+                    <thead>
+                        <tr style="font-weight: bold;">
+                            <td style="width:15%">
+                                Saison n°
+                            </td>
+                            <td>
+                                Vainqueur
+                            </td>
+                            <td>
+                                Dauphin
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                1
+                            </td>
+                            <td>
+                                R0xx0r
+                            </td>
+                            <td>
+                                Ekisomox
+                            </td>
+                        </tr>
+                        <tr class="pure-table-odd">
+                            <td>
+                                2
+                            </td>
+                            <td>
+                                Hashtag_Yolo
+                            </td>
+                            <td>
+                                CousinVic
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                3
+                            </td>
+                            <td>
+                                Hashtag_Yolo
+                            </td>
+                            <td>
+                                Sniper
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>        
 
 
