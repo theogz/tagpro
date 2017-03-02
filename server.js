@@ -23,7 +23,7 @@ var config = {
     database: process.env.PG_DB || 'tagpro',
     port: process.env.PG_PORT || 5432,
     max: 16,
-    idleTiemoutMillis: 30000,
+    idleTiemoutMillis: 12000,
 };
 
 var BASIC_AUTH = [
