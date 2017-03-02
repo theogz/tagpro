@@ -60,18 +60,18 @@ app.use(bodyParser.json());
 app.use(express.static('public'));
 
 var pg_string = process.env.DATABASE_URL || 'postgres://' + config.user + ':' + config.password + '@' + config.host + '/' + config.database;
-var cli = new pg.Pool(config); // Setup our Postgres Client
+var pg_pool = new pg.Pool(config); // Setup our Postgres Client
 
 
 app.get('/players/:id', function(req, res) {
-    cli.connect(function(err) {
+    pg_pool.connect(function(err) {
         if(err) return console.error('cant connect to pg', err);
 
         var player_id = req.params.id;
         var query = "SELECT a.*, b.rank FROM players a INNER JOIN (Select id,rank() over (order by mmr-3*sigma desc) as rank from players) b "+
         "on (a.id = b.id) WHERE a.id="+player_id+";"
 
-        cli.query(query, function (err, result) {
+        pg_pool.query(query, function (err, result) {
             if(err) return console.error('random error db', err);
             if(!result.rows || result.rows.length === 0) {res.status(404).send('Erard 404 : ce joueur n\'existe pas'); return console.log('Player ID not found', player_id)};
 
@@ -79,7 +79,7 @@ app.get('/players/:id', function(req, res) {
 
             var query = "SELECT * FROM matchs m INNER JOIN (SELECT match_id, team FROM players_in_team WHERE player_id="+player_id+") t ON m.id = t.match_id ORDER BY added_at DESC LIMIT 25;"
 
-            cli.query(query, function (err, result) {
+            pg_pool.query(query, function (err, result) {
                 if(err) return console.error('random error db', err);
 
                 if(!result.rows || result.rows.length === 0) {var matchs=[];res.render('players_template', {title:"Fiche de "+player.name, player_stats: player, matchs_table:matchs}); return console.log('No match found', player_id);};
@@ -96,7 +96,6 @@ app.get('/players/:id', function(req, res) {
 
 
 app.get('/playerList', function (req, res) {
-    var pg_pool = new pg.Pool(config);
     pg_pool.connect(function(err) {
         if(err) return console.error('could not connect to pool', err);
 
@@ -131,7 +130,6 @@ var auth = function (req,res,next){
 
 app.post('/addplayer', auth, function(req, res){
     var player_name = req.body.player_name;
-    var pg_pool = new pg.Pool(config);
     pg_pool.connect(function(err) {
         if(err) return console.error('could not connect to pool', err);
 
@@ -155,7 +153,6 @@ app.post('/trueskill', auth, function (req, res) {
     team2ids = _.map(team2, function (player) { return player.id });
 
 
-    var pg_pool = new pg.Pool(config);
     pg_pool.connect(function(err) {
         if(err) return console.error('could not connect to pool', err);
 
@@ -201,7 +198,6 @@ app.post('/matchmaking', function(req, res) {
 });
 
 app.get('/matchList', function(req, res) {
-    var pg_pool = new pg.Pool(config);
     pg_pool.connect(function(err) {
         if(err) return console.error('could not connect to postgres', err);
 
