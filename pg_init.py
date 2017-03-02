@@ -28,7 +28,7 @@ conn = psycopg2.connect(host=os.getenv('PG_HOST', 'localhost'), port=os.getenv('
 cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
 # Create the table of players and the first players
-cur.execute("DROP TABLE players;")
+cur.execute("DROP TABLE IF EXISTS players;")
 cur.execute("CREATE TABLE players (id serial PRIMARY KEY, name varchar, mmr integer default 2500, sigma integer default 833);")
 cur.execute("INSERT INTO players (name) VALUES (%s);", ["HashtagYolo"])
 cur.execute("INSERT INTO players (name) VALUES (%s);", ["R0xx0r"])
@@ -57,12 +57,12 @@ cur.execute("SELECT count(*) FROM players;")
 print '%d players added to database' % cur.fetchone()['count']
 
 # Create the table of matchs and the first match
-cur.execute("DROP TABLE matchs")
+cur.execute("DROP TABLE IF EXISTS matchs")
 cur.execute("CREATE TABLE matchs (id serial PRIMARY KEY, team1 integer[], team2 integer[], score1 integer, score2 integer, computed integer, season integer, added_at timestamp DEFAULT current_timestamp, added_by varchar);")
 
 
 # Create the table of players in matchs
-cur.execute("DROP TABLE players_in_team;")
+cur.execute("DROP TABLE IF EXISTS players_in_team;")
 cur.execute("CREATE TABLE players_in_team (id serial PRIMARY KEY, player_id integer, team integer, match_id integer);")
 
 # Make sure we have the match
