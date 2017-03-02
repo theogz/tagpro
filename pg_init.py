@@ -30,7 +30,7 @@ cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 # Create the table of players and the first players
 cur.execute("DROP TABLE IF EXISTS players;")
 cur.execute("CREATE TABLE players (id serial PRIMARY KEY, name varchar, mmr integer default 2500, sigma integer default 833);")
-cur.execute("INSERT INTO players (name) VALUES (%s);", ["HashtagYolo"])
+cur.execute("INSERT INTO players (name) VALUES (%s);", ["Hashtag_Yolo"])
 cur.execute("INSERT INTO players (name) VALUES (%s);", ["R0xx0r"])
 cur.execute("INSERT INTO players (name) VALUES (%s);", ["Batamanq"])
 cur.execute("INSERT INTO players (name) VALUES (%s);", ["CousinVic"])
