@@ -5,6 +5,7 @@
         <meta charset="utf-8">
         <link href="/imgs/red_flag.png" rel="icon" type="image/x-icon">
         <link rel="stylesheet" type="text/css" href="styles.css">
+        <script type='text/javascript' src='/jquery-3.1.1.min.js'></script>
     </head>
     <body>
 
@@ -17,6 +18,7 @@
             <input type="text" id="player-to-submit" onKeyPress="return addPlayer(event)">
             <button onclick="addPlayer(event)">Ajouter</button>
             <div style="clear: both; display: none;" id="done">Le joueur a bien été ajouté.</div>
+            <div style="clear: both; display: none;" id="error">Le joueur n'a pas pu être ajouté (existe déjà ou autre erreur).</div>
         </div>        
 
 
@@ -45,11 +47,14 @@
 
             var addPlayer = function(e){
                 if ( e && (e.keyCode == 13 || e.type==="click") ){
+                    $('#done').hide();
+                    $('#error').hide();
                     player_name = document.getElementById('player-to-submit').value;
                     if(player_name) {
                         xhr('POST', '/addplayer', {player_name: player_name}, function() {
                             document.getElementById('done').style.display = 'block';
                         }, function(error, data){
+                            document.getElementById('error').style.display = 'block';
                             console.log(error, data);
                         });
                     };

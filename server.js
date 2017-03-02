@@ -136,8 +136,9 @@ app.post('/addplayer', auth, function(req, res){
         pg_pool.query("INSERT INTO players (name) SELECT ($1) WHERE NOT EXISTS (SELECT 1 from players where name = '"+player_name+"' ) RETURNING id", [player_name], function (err, result) {
             if(err) return console.error('could not connect to poolish', err);
             if (result.rows[0]) {
-                console.log('Added player with id', result.rows[0]['id']);res.send({"message": "OK"});
-            } else return res.status(404).send('Player already in database');
+                console.log('Added player with id', result.rows[0]['id']);
+                return res.send({"message": "OK"});
+            } else return res.status(403).send('Player already in database');
         });
     });
 });
