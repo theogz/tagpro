@@ -18,6 +18,13 @@
                 padding: 5px;
                 text-align: left;
             }
+            td.hyperlink a {
+                color:blue;
+                text-decoration:underline;
+            }
+            td.hyperlink a:visited {
+                color:purple;
+            }
         </style>
     </head>
     <body>
@@ -94,12 +101,15 @@
                         var td2 = document.createElement('td');
                         var td3 = document.createElement('td');
                         var td4 = document.createElement('td');
+                        td4.className += 'hyperlink';
+                        var a4 = document.createElement('a');
                         var td5 = document.createElement('td');
                         var td6 = document.createElement('td');
                         td1.innerHTML = match.id;
                         td2.innerHTML = match.score1;
                         td3.innerHTML = match.score2;
-                        td4.innerHTML = moment(match.added_at.toString()).format('ddd LLL');
+                        a4.text = moment(match.added_at.toString()).format('ddd LLL');
+                        a4.href = "/matchs/"+match.id;
                         td5.innerHTML = match.added_by;
                         td6.innerHTML = match.season;
 
@@ -107,6 +117,7 @@
                         tr.appendChild(td1);
                         tr.appendChild(td2);
                         tr.appendChild(td3);
+                        td4.appendChild(a4);
                         tr.appendChild(td4);
                         tr.appendChild(td5);
                         tr.appendChild(td6);
