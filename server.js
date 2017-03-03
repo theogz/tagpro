@@ -50,7 +50,7 @@ var BASIC_AUTH = [
 ];
 
 
-
+console.log(server.address())
 
 var season = 5;
 
