@@ -52,7 +52,6 @@ var BASIC_AUTH = [
 ];
 
 
-console.log(server.address())
 
 var season = 5;
 
@@ -84,7 +83,7 @@ app.get('/players/:id', function(req, res) {
                 done();
                 if(err) return console.error('random error db', err);
 
-                if(!result.rows || result.rows.length === 0) {var matchs=[];res.render('players_template', {title:"Fiche de "+player.name, player_stats: player, matchs_table:matchs}); return console.log('No match found', player_id);};
+                if(!result.rows || result.rows.length === 0) {var matchs=[];res.render('players_template', {title: player.name, player_stats: player, matchs_table:matchs}); return console.log('No match found', player_id);};
                 var matchs = result.rows;
                 res.render('players_template', {
                     title: player.name,
@@ -96,6 +95,39 @@ app.get('/players/:id', function(req, res) {
     });
 });
 
+app.get('/matchs/:id', function(req, res) {
+    pg_pool.connect(function(err, client, done) {
+        if(err) return console.error('cant connect to pg', err);
+        var match_id = req.params.id;
+        var query = `SELECT pit.player_id, pit.team, pl.name
+        FROM players_in_team pit 
+        INNER JOIN (SELECT id, name FROM players) pl 
+        ON (pit.player_id = pl.id)
+        WHERE pit.match_id=`+match_id+`;`
+
+
+        client.query(query, function (err, result) {
+            if(err) return console.error('random error db', err);
+            if(!result.rows || result.rows.length === 0) {res.status(404).send('Erard 404 : ce match n\'existe pas'); return console.log('Match ID not found', match_id)};
+            
+            var match_compo = result.rows;
+
+            var query = `SELECT id, score1, score2, added_by, added_at
+            FROM matchs
+            WHERE id=`+match_id+`;`
+            client.query(query, function(err, result) {
+                done();
+                if(err) return console.error('db error', err);
+                var match_info = result.rows[0];
+                res.render('matchs_template', {
+                    title: 'Match n°'+match_info.id,
+                    match_info: match_info,
+                    match_compo: match_compo
+                });
+            });
+        });
+    });
+});
 
 app.get('/playerList', function (req, res) {
     pg_pool.connect(function(err, client, done) {

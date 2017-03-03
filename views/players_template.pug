@@ -10,9 +10,12 @@ html
     script(type='text/javascript', src='/jquery-3.1.1.min.js')
     script(type='text/javascript', src='/moment-with-locales.js')
     style.
-      td[data-res="vic"] {color:green;}
-      td[data-res="nul"] {color:purple;}
-      td[data-res="def"] {color:red;}
+      td[data-res="vic"] a {color:green;}
+      td[data-res="nul"] a {color:purple;}
+      td[data-res="def"] a {color:red;}
+      td.hyperlink a {color:blue;text-decoration:underline;}
+      td.hyperlink a:visited {color:purple}
+
   body
     a.button(style='clear:both;float:left;margin-top:20px;margin-left:10px;margin-bottom:20px;', href='/')
       | Accueil
@@ -41,26 +44,32 @@ html
       var matchs_table = !{JSON.stringify(matchs_table)};
       var player_stats = !{JSON.stringify(player_stats)};
       $('#playerName').append(player_stats.name);
-      for (i = 0; i < matchs_table.length; i++) {
-      };
+
       $('#rank').append('Classement actuel : '+player_stats.rank)
       var loadMatchsList = function(){
       for (var i = 0 ; i<matchs_table.length ; i++){
       var tr = document.createElement('tr');
       if (i%2===1) tr.className += 'pure-table-odd';
       var td_date = document.createElement('td');
-      td_date.innerHTML = moment(matchs_table[i].added_at.toString()).format('ddd LLL');
+      td_date.className += 'hyperlink';
+      var a_date = document.createElement('a');
+      a_date.text = moment(matchs_table[i].added_at.toString()).format('ddd LLL');
+      a_date.href = "/matchs/"+matchs_table[i].id;
+      td_date.appendChild(a_date);
       var td_id = document.createElement('td');
       td_id.innerHTML = matchs_table[i].id;
-      var td_res = document.createElement('td')
-      var td_score = document.createElement('td')
+      var td_res = document.createElement('td');
+      var td_score = document.createElement('td');
+      var a_score = document.createElement('a');
+      a_score.href = "/matchs/"+matchs_table[i].id;
       if ((matchs_table[i].score2>matchs_table[i].score1 & matchs_table[i].team === 2)|(matchs_table[i].score1>matchs_table[i].score2 & matchs_table[i].team === 1)) {
       td_res.innerHTML = "Victoire"; td_score.dataset.res = 'vic'
       } else if ((matchs_table[i].score2>matchs_table[i].score1 & matchs_table[i].team === 1)|(matchs_table[i].score1>matchs_table[i].score2 & matchs_table[i].team === 2)) {
       td_res.innerHTML = "Défaite"; td_score.dataset.res = 'def'
       } else { td_res.innerHTML = "Nul" ; td_score.dataset.res = 'nul'}
       
-      td_score.innerHTML = matchs_table[i].score1.toString() + '-' + matchs_table[i].score2.toString()
+      a_score.text = matchs_table[i].score1.toString() + '-' + matchs_table[i].score2.toString()
+      td_score.appendChild(a_score);
       td_score.style.fontWeight = 'bold';
       document.getElementById('historique').getElementsByTagName('tbody')[0].appendChild(tr);
       tr.appendChild(td_id);
@@ -70,24 +79,6 @@ html
       }
       }
       loadMatchsList();
-      // Simple asynchronous requests to server
-      function xhr(method, url, data, callback, errorCB) {
-      var req = new XMLHttpRequest()
-      req.open(method, url, true);
-      req.onload = function(e) {
-      if (this.status.toString()[0] === '2') {
-      callback(JSON.parse(this.responseText));
-      } else {
-      errorCB(this.status, this.responseText);
-      }
-      }
-      if (method === 'POST') {
-      req.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-      req.send(JSON.stringify(data));
-      } else {
-      req.send();
-      }
-      }
 
 
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

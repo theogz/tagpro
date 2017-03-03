@@ -1,0 +1,75 @@
+doctype
+html
+  head
+    title #{title}
+    meta(charset='utf-8')
+    link(href='/imgs/red_flag.png', rel='icon', type='image/x-icon')
+    link(rel='stylesheet', type='text/css', href='/styles.css')
+    link(rel='stylesheet', type='text/css', href='/simple-grid.min.css')
+    link(rel='stylesheet', type='text/css', href='/pure-min.css')
+    script(type='text/javascript', src='/jquery-3.1.1.min.js')
+    script(type='text/javascript', src='/moment-with-locales.js')
+    style.
+      tr a {color:blue;}
+      tr a:visited {color:purple}
+      tr:nth-child(even) {}
+  body
+    a.button(style='clear:both;float:left;margin-top:20px;margin-left:10px;margin-bottom:20px;', href='/')
+      | Accueil
+    h2(id='matchId' style='clear:both;margin-top:0px;padding-left:20px')
+      |Match n°
+    h3(id='date' style='clear:both;margin-top:0px;margin-bottom:0px;padding-left:40px')
+      |Joué le 
+    .container
+      .row
+        .col-2
+        .col-10
+          table#team-red.pure-table(width='80%' style='border:0;border-bottom:solid 1px #cbcbcb')
+            thead
+              tr(style='background-color: hsl(0, 50%, 50%);color:white;font-weight:bold;', align='center')
+            tbody
+      .row
+        .col-2
+        .col-10
+          table#team-blu.pure-table(width='80%' style='border:0;border-bottom:solid 1px #cbcbcb')
+            thead
+              tr(style='background-color: hsl(240, 50%, 50%);color:white;font-weight:bold;', align='center')
+            tbody
+    script(type='text/javascript').
+      moment.locale('fr');
+      var match_info = !{JSON.stringify(match_info)};
+      var match_compo = !{JSON.stringify(match_compo)};
+      $('#matchId').append(match_info.id);
+      $('#date').append(moment(match_info.added_at.toString()).format('dddd LLL'))
+      $('#team-red tr').append(match_info.score1);
+      $('#team-blu tr').append(match_info.score2);
+      var loadMatchDetails = function(){
+      for (var i = 0 ; i<match_compo.length ; i++){
+      var tr = document.createElement('tr');
+      tr.align = 'center';
+      var td = document.createElement('td');
+      td.style.paddingTop = '0.2em';
+      td.style.paddingBottom = '0.2em';
+      var a = document.createElement('a');
+      a.href = "/players/"+match_compo[i].player_id;
+      a.text = match_compo[i].name;
+      if (eval('match_info.score'+match_compo[i].team)>eval('match_info.score'+(3-match_compo[i].team))) {
+        a.style.fontWeight = 'bold';
+      }
+      td.appendChild(a);
+      tr.appendChild(td);
+      var team = match_compo[i].team === 1 ? 'team-red' : 'team-blu';
+      document.getElementById(team).getElementsByTagName('tbody')[0].appendChild(tr);
+      }
+      }
+      loadMatchDetails();
+
+      $('table tbody tr:odd').addClass('pure-table-odd');
+
+
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-81626852-1', 'auto');
+      ga('send', 'pageview');
