@@ -133,7 +133,10 @@ app.get('/playerList', function (req, res) {
     pg_pool.connect(function(err, client, done) {
         if(err) return console.error('could not connect to pool', err);
 
-        client.query('SELECT * FROM players ORDER by (mmr-3*sigma) desc', function (err, result) {
+        client.query(`SELECT pl.*, COALESCE(pit.nb_matchs, 0) nb_matchs FROM players pl 
+            LEFT JOIN (SELECT player_id, count(*) nb_matchs FROM players_in_team GROUP BY player_id) pit
+            ON (pit.player_id = pl.id)
+            ORDER by (mmr-3*sigma) desc`, function (err, result) {
             done();
             if(err) return console.error('could not query db', err);
             var players = result.rows;

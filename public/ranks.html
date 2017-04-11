@@ -15,7 +15,7 @@
             }
             th, td {
                 padding: 5px;
-                text-align: left;
+                text-align: center;
             }
             td a {
                 color:blue;
@@ -32,7 +32,7 @@
         </a>
         <div class="container">
             <div class="col-12">
-                <table id="matchs" class="pure-table" style="width:100%;">
+                <table id="ranks" class="pure-table" style="width:100%;">
                     <thead>
                         <tr style="font-weight: bold;">                    
                             <td style="width:5%">
@@ -47,6 +47,9 @@
                             <td>
                                 Niveau moyen
                             </td>
+                            <td>
+                                Match joués
+                            </td>                            
                         </tr>
                     </thead>
                     <tbody>
@@ -92,6 +95,7 @@
                         var td2 = document.createElement('td');
                         var td3 = document.createElement('td');
                         var td4 = document.createElement('td');
+                        var td5 = document.createElement('td');
                         td1.innerHTML = i+1;
                         td2.innerHTML = "";
                         var profile_url = document.createElement('a');
@@ -100,12 +104,14 @@
                         td2.appendChild(profile_url);
                         td3.innerHTML = players.mmr-3*players.sigma;
                         td4.innerHTML = players.mmr;
+                        td5.innerHTML = players.nb_matchs;
 
-                        document.getElementById('matchs').getElementsByTagName('tbody')[0].appendChild(tr);
+                        document.getElementById('ranks').getElementsByTagName('tbody')[0].appendChild(tr);
                         tr.appendChild(td1);
                         tr.appendChild(td2);
                         tr.appendChild(td3);
                         tr.appendChild(td4);
+                        tr.appendChild(td5);
                     })(list[i]);
 
                 }, function (error, data) {
