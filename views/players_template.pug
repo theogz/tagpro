@@ -60,7 +60,7 @@ html
             }
         }
       if (seasonMatchs > 0){
-        winrate = 100*round(totalVictories/seasonMatchs, 2)
+        winrate = round(100*round(totalVictories/seasonMatchs, 2),0);
         }
       $('#seasonWinrate').append('Victoires cette saison: '+totalVictories+' ('+winrate+ ' %)')
       var loadMatchsList = function(){
