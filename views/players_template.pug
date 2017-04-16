@@ -21,6 +21,7 @@ html
       | Accueil
     h2(id='playerName' style='clear:both;margin-top:0px;padding-left:20px')
     h3(id='rank' style='clear:both;margin-top:0px;margin-bottom:0px;padding-left:40px')
+    h3(id='seasonWinrate' style='clear:both;margin-top:0px;margin-bottom:0px;padding-left:40px')
     .container
       .row
         .col-12
@@ -40,12 +41,28 @@ html
                   | Résultat
             tbody
     script(type='text/javascript').
+      function round(number, decimals) {return Math.round(number * Math.pow(10, decimals)) / Math.pow(10, decimals)};
       moment.locale('fr');
       var matchs_table = !{JSON.stringify(matchs_table)};
       var player_stats = !{JSON.stringify(player_stats)};
+      var season = !{JSON.stringify(season)};
       $('#playerName').append(player_stats.name);
-
-      $('#rank').append('Classement actuel : '+player_stats.rank)
+      $('#rank').append('Classement actuel : '+player_stats.rank);
+      var winrate = 0;
+      var totalVictories = 0;
+      var seasonMatchs = 0;
+      for (var i = 0; i<matchs_table.length ; i++){
+          if ((matchs_table[i].season===season)&((matchs_table[i].score2>matchs_table[i].score1 & matchs_table[i].team === 2)|(matchs_table[i].score1>matchs_table[i].score2 & matchs_table[i].team === 1))){
+            totalVictories = totalVictories + 1;
+            }
+          if (matchs_table[i].season===season){
+              seasonMatchs = seasonMatchs + 1;
+            }
+        }
+      if (seasonMatchs > 0){
+        winrate = 100*round(totalVictories/seasonMatchs, 2)
+        }
+      $('#seasonWinrate').append('Victoires cette saison: '+totalVictories+' ('+winrate+ ' %)')
       var loadMatchsList = function(){
       for (var i = 0 ; i<matchs_table.length ; i++){
       var tr = document.createElement('tr');

@@ -83,12 +83,13 @@ app.get('/players/:id', function(req, res) {
                 done();
                 if(err) return console.error('random error db', err);
 
-                if(!result.rows || result.rows.length === 0) {var matchs=[];res.render('players_template', {title: player.name, player_stats: player, matchs_table:matchs}); return console.log('No match found', player_id);};
+                if(!result.rows || result.rows.length === 0) {var matchs=[];res.render('players_template', {title: player.name, player_stats: player, matchs_table:matchs, season: season}); return console.log('No match found', player_id);};
                 var matchs = result.rows;
                 res.render('players_template', {
                     title: player.name,
                     player_stats: player,
-                    matchs_table: matchs
+                    matchs_table: matchs,
+                    season: season
                 });
             });
         });
