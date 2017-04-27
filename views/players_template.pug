@@ -62,7 +62,7 @@ html
       if (seasonMatchs > 0){
         winrate = round(100*round(totalVictories/seasonMatchs, 2),0);
         }
-      $('#seasonWinrate').append('Victoires cette saison: '+totalVictories+' ('+winrate+ ' %)')
+      $('#seasonWinrate').append('Forme du moment: '+totalVictories+'/'+seasonMatchs+' ('+winrate+ ' %)')
       var loadMatchsList = function(){
       for (var i = 0 ; i<matchs_table.length ; i++){
       var tr = document.createElement('tr');
