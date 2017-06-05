@@ -53,7 +53,7 @@ var BASIC_AUTH = [
 
 
 
-var season = 5;
+var season = 6;
 
 // needed to parse JSON data from client
 var bodyParser = require('body-parser');
