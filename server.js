@@ -135,7 +135,7 @@ app.get('/playerList', function (req, res) {
         if(err) return console.error('could not connect to pool', err);
 
         client.query(`SELECT pl.*, COALESCE(pit.nb_matchs, 0) nb_matchs FROM players pl 
-            LEFT JOIN (SELECT player_id, count(*) nb_matchs FROM players_in_team GROUP BY player_id) pit
+            LEFT JOIN (SELECT player_id, count(*) nb_matchs FROM players_in_team WHERE season = ${season} GROUP BY player_id) pit
             ON (pit.player_id = pl.id)
             ORDER by (mmr-3*sigma) desc`, function (err, result) {
             done();
@@ -207,7 +207,7 @@ app.post('/trueskill', auth, function (req, res) {
             res.send({"message": "OK"});
 
             async.each(concat_teams, function(element, cb) {
-                client.query('INSERT INTO players_in_team (player_id, team, match_id) VALUES ($1, $2, $3) RETURNING id', [element.id, element.team, match_id], function (err, result) {
+                client.query('INSERT INTO players_in_team (player_id, team, match_id, season) VALUES ($1, $2, $3, $4) RETURNING id', [element.id, element.team, match_id, season], function (err, result) {
                     if(err) return cb(err);
 
                     return cb(null);
