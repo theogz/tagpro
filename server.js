@@ -246,7 +246,7 @@ app.get('/matchList', function(req, res) {
     pg_pool.connect(function(err, client, done) {
         if(err) return console.error('could not connect to postgres', err);
 
-        client.query('SELECT * FROM matchs ORDER BY id desc limit 100', function (err, result) {
+        client.query('SELECT * FROM matchs ORDER BY id desc', function (err, result) {
             done();
             if(err) return console.error('could not query db', err);
 
