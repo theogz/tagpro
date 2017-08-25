@@ -102,7 +102,7 @@
                         profile_url.href = "/players/"+players.id;
                         profile_url.text = players.name;
                         td2.appendChild(profile_url);
-                        td3.innerHTML = players.mmr-3*players.sigma;
+                        td3.innerHTML = (players.mmr-3*players.sigma)-1;
                         td4.innerHTML = players.mmr;
                         td5.innerHTML = players.nb_matchs;
 
