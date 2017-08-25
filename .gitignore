@@ -12,6 +12,3 @@ node_modules
 
 # Sensitive files
 .env
-
-# WIP
-/views/brouillon_players.html
