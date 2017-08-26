@@ -1,14 +1,16 @@
 #Tagpro Trueskill
 
-##Database init
+##First time setup
 
-Make sure you have postgresql installed and running.
-
-Edit the config in `pg_init.py` to your desired environment.
-
-Run `python pg_init.py` to create the database, tables, and insert some values in them (edit `pg_init.py` accordingly).
-
-**NOTE: every time your run `python pg_init.py` the database will be DROPPED. Don't do that on the production server.**
+- Download and install [node.js](http://nodejs.org/).
+- Install postgresql and have a database running.
+- Clone the project in a folder somewhere.
+- edit `pg_init.py` to match your own config (by default it has 2 players, MMR of 25 and sigma of 8.33)
+- Open the terminal on the folder where the project is.
+- run `npm install` once.
+- run `python pg_init.py`
+**WARNING! every time you execute this previous command, the database will be DROPPED. Don't do that on the production server.**
+- run `node server.js` to start the server.
 
 ##Web server
 
