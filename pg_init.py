@@ -45,7 +45,7 @@ cur.execute("CREATE TABLE matchs (id serial PRIMARY KEY, team1 integer[], team2 
 
 # Create the table of players in matchs
 cur.execute("DROP TABLE IF EXISTS players_in_team;")
-cur.execute("CREATE TABLE players_in_team (id serial PRIMARY KEY, player_id integer, team integer, match_id integer);")
+cur.execute("CREATE TABLE players_in_team (id serial PRIMARY KEY, player_id integer, team integer, match_id integer, season integer);")
 
 # Make sure we have the match
 # cur.execute("SELECT * FROM matchs;")
