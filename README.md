@@ -1,6 +1,8 @@
-#Tagpro Trueskill
+Tagpro Trueskill
+=====
 
-##First time setup
+First time setup
+-----
 
 - Download and install [node.js](http://nodejs.org/).
 - Install postgresql and have a database running.
@@ -12,7 +14,8 @@
 **WARNING! every time you execute this previous command, the database will be DROPPED. Don't do that on the production server.**
 - run `node server.js` to start the server.
 
-##Web server
+Web server
+-----
 
 The web pages are served by Express running on NodeJS. The entire project is built to be deployed on Heroku.
 
