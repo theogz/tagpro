@@ -32,7 +32,12 @@ cur.execute("DROP TABLE IF EXISTS players;")
 cur.execute("CREATE TABLE players (id serial PRIMARY KEY, name varchar, mmr integer default 2500, sigma integer default 833);")
 cur.execute("INSERT INTO players (name) VALUES (%s);", ["Hashtag_Yolo"])
 cur.execute("INSERT INTO players (name) VALUES (%s);", ["R0xx0r"])
-
+cur.execute("INSERT INTO players (name) VALUES (%s);", ["Ekisomox"])
+cur.execute("INSERT INTO players (name) VALUES (%s);", ["Batamanq"])
+cur.execute("INSERT INTO players (name) VALUES (%s);", ["Cousinvic"])
+cur.execute("INSERT INTO players (name) VALUES (%s);", ["Nulos"])
+cur.execute("INSERT INTO players (name) VALUES (%s);", ["FonkyNuma"])
+cur.execute("INSERT INTO players (name) VALUES (%s);", ["Bouboule"])
 
 # Make sure we have all the players
 cur.execute("SELECT count(*) FROM players;")
@@ -46,6 +51,10 @@ cur.execute("CREATE TABLE matchs (id serial PRIMARY KEY, team1 integer[], team2 
 # Create the table of players in matchs
 cur.execute("DROP TABLE IF EXISTS players_in_team;")
 cur.execute("CREATE TABLE players_in_team (id serial PRIMARY KEY, player_id integer, team integer, match_id integer, season integer);")
+
+# Create the table of mmr historical variations
+cur.execute("DROP TABLE IF EXISTS mmr_variations;")
+cur.execute("CREATE TABLE mmr_variations (id serial PRIMARY KEY, player_id integer, last_update timestamp DEFAULT current_timestamp, mmr integer, sigma integer);")
 
 # Make sure we have the match
 # cur.execute("SELECT * FROM matchs;")
