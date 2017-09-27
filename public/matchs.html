@@ -108,7 +108,7 @@
                         td1.innerHTML = match.id;
                         td2.innerHTML = match.score1;
                         td3.innerHTML = match.score2;
-                        a4.text = moment(match.added_at.toString()).format('ddd LLL');
+                        a4.text = moment(match.added_at.toString()).format('ddd L LT');
                         a4.href = "/matchs/"+match.id;
                         td5.innerHTML = match.added_by;
                         td6.innerHTML = match.season;
