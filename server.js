@@ -13,6 +13,7 @@ var port = Number(process.env.PORT) || 3000;
 
 var exec = require('child_process').exec;
 var pg = require('pg');
+var fs = require('fs');
 
 var async = require('async');
 
@@ -54,6 +55,7 @@ var BASIC_AUTH = [
 
 
 var season = 9;
+let query_for_ranks = fs.readFileSync('./query_ranking_evolution.sql').toString().replace('${season}', season);
 
 // needed to parse JSON data from client
 var bodyParser = require('body-parser');
@@ -134,10 +136,7 @@ app.get('/playerList', function (req, res) {
     pg_pool.connect(function(err, client, done) {
         if(err) return console.error('could not connect to pool', err);
 
-        client.query(`SELECT pl.*, COALESCE(pit.nb_matchs, 0) nb_matchs FROM players pl 
-            LEFT JOIN (SELECT player_id, count(*) nb_matchs FROM players_in_team WHERE season = ${season} GROUP BY player_id) pit
-            ON (pit.player_id = pl.id)
-            ORDER by (mmr-3*sigma) desc`, function (err, result) {
+        client.query(query_for_ranks, function (err, result) {
             done();
             if(err) return console.error('could not query db', err);
             var players = result.rows;
