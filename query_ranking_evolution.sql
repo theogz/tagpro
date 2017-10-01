@@ -55,9 +55,10 @@ select
 	, players.name
 	, ranks.mmr
 	, ranks.sigma
+	, ranks.rank_1 as current_rank
 	, case when (ranks.rank_0 - ranks.rank_1 > 0) then 1
 	when (ranks.rank_0 - ranks.rank_1 < 0) then -1
-	else 0 end as rank_improved
+	else 0 end as rank_did_improve
 	, COALESCE(pit.nb_matchs, 0) as nb_matchs
 from
 	ranks

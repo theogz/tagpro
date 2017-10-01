@@ -23,6 +23,30 @@
             td a:visited {
                 color:purple;
             }
+            .gauche{
+                display:table-cell;
+                padding: 0 30px 0 30px;
+            }
+            .droite{
+                display:table-cell; 
+            }
+            .rank_up {
+                color: green;
+                transform: rotate(-45deg);
+                font-weight: bold;
+                font-size:larger;
+            }
+            .rank_stable {
+                color: grey;
+                font-weight: bold;
+                font-size:larger;                
+            }
+            .rank_down {
+                font-weight: bold;
+                font-size:larger;                
+                color: red;
+                transform: rotate(+45deg);
+            }
         </style>
     </head>
     <body>
@@ -96,8 +120,18 @@
                         var td3 = document.createElement('td');
                         var td4 = document.createElement('td');
                         var td5 = document.createElement('td');
-                        var rank_improved = players.rank_improved;
-                        td1.innerHTML = i+1;
+                        var rank_did_improve = players.rank_did_improve;
+                        var td1_left = document.createElement('div');
+                        var td1_right = document.createElement('div');
+                        td1_right.className += 'droite ';
+                        td1_left.className += 'gauche ';
+                        td1_left.innerHTML = players.current_rank;
+                        td1_right.innerHTML = '⇨';
+                        if (rank_did_improve == 1) td1_right.className += 'rank_up';
+                        if (rank_did_improve == 0) td1_right.className += 'rank_stable';
+                        if (rank_did_improve == -1) td1_right.className += 'rank_down';
+                        td1.appendChild(td1_left);
+                        td1.appendChild(td1_right);
                         td2.innerHTML = "";
                         var profile_url = document.createElement('a');
                         profile_url.href = "/players/"+players.id;
