@@ -34,7 +34,7 @@ cur.execute("INSERT INTO players (name) VALUES (%s);", ["Hashtag_Yolo"])
 cur.execute("INSERT INTO players (name) VALUES (%s);", ["R0xx0r"])
 cur.execute("INSERT INTO players (name) VALUES (%s);", ["Ekisomox"])
 cur.execute("INSERT INTO players (name) VALUES (%s);", ["Batamanq"])
-cur.execute("INSERT INTO players (name) VALUES (%s);", ["Cousinvic"])
+cur.execute("INSERT INTO players (name) VALUES (%s);", ["CousinVic"])
 cur.execute("INSERT INTO players (name) VALUES (%s);", ["Nulos"])
 cur.execute("INSERT INTO players (name) VALUES (%s);", ["FonkyNuma"])
 cur.execute("INSERT INTO players (name) VALUES (%s);", ["Bouboule"])
@@ -54,7 +54,8 @@ cur.execute("CREATE TABLE players_in_team (id serial PRIMARY KEY, player_id inte
 
 # Create the table of mmr historical variations
 cur.execute("DROP TABLE IF EXISTS mmr_variations;")
-cur.execute("CREATE TABLE mmr_variations (id serial PRIMARY KEY, player_id integer, last_update timestamp DEFAULT current_timestamp, mmr integer, sigma integer);")
+cur.execute("CREATE TABLE mmr_variations (id serial PRIMARY KEY, player_id integer, updated_at timestamp DEFAULT current_timestamp, mmr integer DEFAULT 2500, sigma integer DEFAULT 833, season integer DEFAULT 9);")
+cur.execute("INSERT INTO mmr_variations (player_id, mmr, sigma) SELECT id as player_id, mmr, sigma from players;")
 
 # Make sure we have the match
 # cur.execute("SELECT * FROM matchs;")

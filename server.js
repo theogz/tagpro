@@ -13,6 +13,7 @@ var port = Number(process.env.PORT) || 3000;
 
 var exec = require('child_process').exec;
 var pg = require('pg');
+var fs = require('fs');
 
 var async = require('async');
 
@@ -54,6 +55,7 @@ var BASIC_AUTH = [
 
 
 var season = 9;
+let query_for_ranks = fs.readFileSync('./query_ranking_evolution.sql').toString().replace('${season}', season);
 
 // needed to parse JSON data from client
 var bodyParser = require('body-parser');
@@ -134,10 +136,7 @@ app.get('/playerList', function (req, res) {
     pg_pool.connect(function(err, client, done) {
         if(err) return console.error('could not connect to pool', err);
 
-        client.query(`SELECT pl.*, COALESCE(pit.nb_matchs, 0) nb_matchs FROM players pl 
-            LEFT JOIN (SELECT player_id, count(*) nb_matchs FROM players_in_team WHERE season = ${season} GROUP BY player_id) pit
-            ON (pit.player_id = pl.id)
-            ORDER by (mmr-3*sigma) desc`, function (err, result) {
+        client.query(query_for_ranks, function (err, result) {
             done();
             if(err) return console.error('could not query db', err);
             var players = result.rows;
@@ -173,11 +172,16 @@ app.post('/addplayer', auth, function(req, res){
         if(err) return console.error('could not connect to pool', err);
 
         client.query("INSERT INTO players (name) SELECT ($1) WHERE NOT EXISTS (SELECT 1 from players where name = '"+player_name+"' ) RETURNING id", [player_name], function (err, result) {
-            done();
             if(err) return console.error('could not connect to poolish', err);
             if (result.rows[0]) {
                 console.log('Added player with id', result.rows[0]['id']);
-                return res.send({"message": "OK"});
+                client.query("INSERT INTO mmr_variations (player_id) SELECT ($1) WHERE NOT EXISTS (SELECT 1 from mmr_variations where player_id = '"+result.rows[0]['id']+"' ) RETURNING player_id", [result.rows[0]['id']], function(err, result) {
+                    done();
+                    if(result.rows[0]) {
+                        console.log('Added player in mmr_variations table');
+                        return res.send({"message": "OK"});
+                    } else return res.status(403).send('Player already in mmr_variations');
+                })
             } else return res.status(403).send('Player already in database');
         });
     });
@@ -190,8 +194,8 @@ app.post('/trueskill', auth, function (req, res) {
     var scoreTeam2 = req.body.score['2'];
     var matchComputed = 0;
 
-    var team1ids = _.map(team1, function (player) { return {id: player.id, team: '1'}; });
-    var team2ids = _.map(team2, function (player) { return {id: player.id, team: '2'}; });
+    var team1ids = _.map(team1, function (player) { return {id: player.player_id, team: '1'}; });
+    var team2ids = _.map(team2, function (player) { return {id: player.player_id, team: '2'}; });
     var concat_teams = team1ids.concat(team2ids);
 
     pg_pool.connect(function(err, client, done) {
