@@ -25,10 +25,11 @@
             }
             .gauche{
                 display:table-cell;
-                padding: 0 30px 0 30px;
+                padding: 0 0 0 60px;
             }
             .droite{
-                display:table-cell; 
+                display:table-cell;
+                padding: 0;
             }
             .rank_up {
                 color: green;
@@ -59,8 +60,10 @@
                 <table id="ranks" class="pure-table" style="width:100%;">
                     <thead>
                         <tr style="font-weight: bold;">                    
-                            <td style="width:5%">
+                            <td style="width:5%;padding-left: 40px;">
                                 Classement
+                            </td>
+                            <td style="border:none;width:3%;padding-left:50px;">
                             </td>
                             <td>
                                 Joueur
@@ -116,6 +119,7 @@
                         var tr = document.createElement('tr');
                         if (i%2===1) tr.className += 'pure-table-odd';
                         var td1 = document.createElement('td');
+                        var td1_invisible = document.createElement('td');
                         var td2 = document.createElement('td');
                         var td3 = document.createElement('td');
                         var td4 = document.createElement('td');
@@ -131,7 +135,9 @@
                         if (rank_did_improve == 0) td1_right.className += 'rank_stable';
                         if (rank_did_improve == -1) td1_right.className += 'rank_down';
                         td1.appendChild(td1_left);
-                        td1.appendChild(td1_right);
+                        // td1.appendChild(td1_right);
+                        td1_invisible.appendChild(td1_right);
+                        td1_invisible.style.border = 'none';
                         td2.innerHTML = "";
                         var profile_url = document.createElement('a');
                         profile_url.href = "/players/"+players.player_id;
@@ -143,6 +149,7 @@
 
                         document.getElementById('ranks').getElementsByTagName('tbody')[0].appendChild(tr);
                         tr.appendChild(td1);
+                        tr.appendChild(td1_invisible);
                         tr.appendChild(td2);
                         tr.appendChild(td3);
                         tr.appendChild(td4);
