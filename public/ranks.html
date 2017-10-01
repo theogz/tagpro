@@ -134,7 +134,7 @@
                         td1.appendChild(td1_right);
                         td2.innerHTML = "";
                         var profile_url = document.createElement('a');
-                        profile_url.href = "/players/"+players.id;
+                        profile_url.href = "/players/"+players.player_id;
                         profile_url.text = players.name;
                         td2.appendChild(profile_url);
                         td3.innerHTML = (players.mmr-3*players.sigma)-1;
