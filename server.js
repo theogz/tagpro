@@ -66,7 +66,7 @@ var pg_string = process.env.DATABASE_URL || 'postgres://' + config.user + ':' + 
 var pg_pool = new pg.Pool(config); // Setup our Postgres Client
 
 
-app.get('/players/:id', function(req, res) {
+app.get('/players/:id([0-9]+)', function(req, res) {
     pg_pool.connect(function(err, client, done) {
         if(err) return console.error('cant connect to pg', err);
 
@@ -98,7 +98,7 @@ app.get('/players/:id', function(req, res) {
     });
 });
 
-app.get('/matchs/:id', function(req, res) {
+app.get('/matchs/:id([0-9]+)', function(req, res) {
     pg_pool.connect(function(err, client, done) {
         if(err) return console.error('cant connect to pg', err);
         var match_id = req.params.id;
