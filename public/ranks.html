@@ -24,11 +24,9 @@
                 color:purple;
             }
             .gauche{
-                display:table-cell;
-                padding: 0 0 0 60px;
+                padding: 0 0 0 25px;
             }
             .droite{
-                display:table-cell;
                 padding: 0;
             }
             .rank_up {
@@ -48,6 +46,9 @@
                 color: red;
                 transform: rotate(+45deg);
             }
+            .pure-table td {
+                padding: 0.5em 0em;
+            }
         </style>
     </head>
     <body>
@@ -60,10 +61,10 @@
                 <table id="ranks" class="pure-table" style="width:100%;">
                     <thead>
                         <tr style="font-weight: bold;">                    
-                            <td style="width:5%;padding-left: 40px;">
+                            <td style="width:5%;padding-left: 25px;">
                                 Classement
                             </td>
-                            <td style="border:none;width:3%;padding-left:50px;">
+                            <td style="border:none;width:3%;">
                             </td>
                             <td>
                                 Joueur
@@ -138,6 +139,7 @@
                         // td1.appendChild(td1_right);
                         td1_invisible.appendChild(td1_right);
                         td1_invisible.style.border = 'none';
+                        td1_invisible.style["padding-right"] = '10px';
                         td2.innerHTML = "";
                         var profile_url = document.createElement('a');
                         profile_url.href = "/players/"+players.player_id;
