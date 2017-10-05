@@ -144,12 +144,12 @@
 
             // Add player to player list
             var updatePlayerToPlayerList = function(player, li) {
-                if ((ids.indexOf(player.id) === -1)&(ids.length<12)) {
-                    ids.push(player.id);
+                if ((ids.indexOf(player.player_id) === -1)&(ids.length<12)) {
+                    ids.push(player.player_id);
                     li.classList.add('added');
                 }
-                else if (ids.indexOf(player.id) !== -1){
-                    ids.splice(ids.indexOf(player.id), 1);
+                else if (ids.indexOf(player.player_id) !== -1){
+                    ids.splice(ids.indexOf(player.player_id), 1);
                     li.classList.remove('added');
                     li.classList.remove('red');
                     li.classList.remove('blu');
