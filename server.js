@@ -238,6 +238,8 @@ app.post('/trueskill', auth, function (req, res) {
 
 app.post('/matchmaking', function(req, res) {
     var ids = req.body.ids;
+    // small protection yap
+    if (ids.length < 2) return
     var options = {args: ids, mode: 'json'};
     PythonShell.run('matchmaking.py', options, function(err, results) {
         if (err) throw err;
@@ -259,6 +261,34 @@ app.get('/matchList', function(req, res) {
         });
     });
 });
+
+app.post('/players/team', function(req, res){
+    // Added by YaP to query single player information
+// Get ids
+    var ids = req.body.ids;
+// small protection yap
+    if (ids.length == 0) return;
+
+     pg_pool.connect(function(err, client, done) {
+        if(err) return console.error('could not connect to postgres', err);
+        // build id query string
+        var idsStr = ''
+        ids.forEach(function(el, index){
+            idsStr += el
+            if (index < ids.length - 1) {
+                idsStr += ','
+            }
+        })
+
+// query player info
+        client.query('SELECT * FROM players WHERE id IN (' + idsStr + ');', function (err, result) {
+            done();
+            if(err) return console.error('could not query db', err);
+            var players = result.rows;
+            res.send(players)
+        })
+    })
+ })
 
 app.get('*', function (req, res) { res.status(404).send('The flag has been captured.'); });
 

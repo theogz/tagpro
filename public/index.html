@@ -1,232 +1,266 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Ranking tagpro</title>
-        <meta charset="utf-8">
-        <link href="/imgs/red_flag.png" rel="icon" type="image/x-icon">
-        <link rel="stylesheet" type="text/css" href="styles.css">
-        <style type="text/css">
-    
 
-            .joueur:hover {
-                box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, .5);
-                background-color: orange;
-            }
+<head>
+    <title>Ranking tagpro</title>
+    <meta charset="utf-8">
+    <link href="/imgs/red_flag.png" rel="icon" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <style type="text/css">
+    .joueur:hover {
+        box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, .5);
+        background-color: orange;
+    }
 
-            .joueur.added {
-                background: grey;
-            }
+    .joueur.added {
+        background: grey;
+    }
 
-            .joueur.added:hover {
-                box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, .5);
-            }
+    .joueur.added:hover {
+        box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, .5);
+    }
 
-            table, th, td {
-                border: 1px solid black;
-                border-collapse: collapse;
-            }
-            th, td {
-                padding: 5px;
-                text-align: left;
-            }
+    table,
+    th,
+    td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
 
-            .red {
-                background-color: hsl(0, 50%, 50%);
-            }
+    th,
+    td {
+        padding: 5px;
+        text-align: left;
+    }
 
-            .blu {
-                background-color: hsl(240, 50%, 50%);
-            }
+    .red {
+        background-color: hsl(0, 50%, 50%);
+    }
 
-            .button.new {
-                background-color: orange;
-            }
-        </style>
-    </head>
-    <body>
+    .blu {
+        background-color: hsl(240, 50%, 50%);
+    }
 
-        <a class="button" style="float:left;margin-top:20px;margin-left:10px" href='/newmatch.html'>
+    .button.new {
+        background-color: orange;
+    }
+    </style>
+</head>
+
+<body>
+    <a class="button" style="float:left;margin-top:20px;margin-left:10px" href='/newmatch.html'>
             Add match
         </a>
-
-        <a class="button" style="float:left;margin-top:20px;margin-left:10px" href="/graphs.html">
+    <a class="button" style="float:left;margin-top:20px;margin-left:10px" href="/graphs.html">
             Gaussiennes
         </a>
-        <a class="button" style="float:left;margin-top:20px;margin-left:10px" href="/ranks.html">
+    <a class="button" style="float:left;margin-top:20px;margin-left:10px" href="/ranks.html">
             Classement
         </a>
-        <a class="button" style="float:left;margin-top:20px;margin-left:10px" href="/matchs.html">
+    <a class="button" style="float:left;margin-top:20px;margin-left:10px" href="/matchs.html">
             Matchs récents
         </a>
-        <a class="button" style="float:left;margin-top:20px;margin-left:10px" href="/halloffame.html">
+    <a class="button" style="float:left;margin-top:20px;margin-left:10px" href="/halloffame.html">
             Hall of Fame
         </a>
-        <a class="button" style="float:left;margin-top:20px;margin-left:10px" href="/addplayer.html">
+    <a class="button" style="float:left;margin-top:20px;margin-left:10px" href="/addplayer.html">
             Ajouter joueur
         </a>
-        <h2>Sélectionner les joueurs présents :</h2>
+    <h2>Sélectionner les joueurs présents :</h2>
+    <div style="clear:both;float:left;margin-bottom:10px">
+        Nombre de joueurs :&nbsp
+    </div>
+    <div id="playerCount" style="float:left">
+        0
+        <!-- updated every time a player is clicked -->
+    </div>
+    <div style="clear:both">
+        <ul id="joueurs">
+            <!-- Will be completed with the list of players from the server -->
+        </ul>
+    </div>
+    <div class="button" style="clear:both;float:left;margin-top:20px;background-color:hsl(272,34%,40%);color:white" onclick="sendList()">
+        Générer les équipes
+    </div>
+    <div class="button" style="float:left;margin-top:20px;background-color:hsl(29,53%,36%);color:white" onclick="resetList()">
+        Réinitialiser les joueurs
+    </div>
+    <div id="red-team-container" style="clear:both;float:left;margin-top:50px; border: solid red 1px; border-radius: 10px; padding: 20px;color:white;font-weight: bold;display:none;" class="red">
+<span id="red-team" style="margin-top: 10px;"></span>
+    </div>
+    <div id="blue-team-container" style="clear:both;float:left;margin-top:10px; border: solid blue 1px; border-radius: 10px; padding: 20px;color:white;font-weight: bold;display:none;" class="blu"">
+<span id="blue-team" style="margin-top: 10px;"></span>
+    </div>
+    <div id="quality" style="clear:both;float:left;margin-top:25px;display:none">
+        Qualité du match :
+    </div>
+    <script type="text/javascript">
+    var ids = [];
+    // Simple asynchronous requests to server
+    function xhr(method, url, data, callback, errorCB) {
+        var req = new XMLHttpRequest()
+        req.open(method, url, true);
 
-        <div style="clear:both;float:left;margin-bottom:10px">
-            Nombre de joueurs :&nbsp 
-        </div>
+        req.onload = function(e) {
+            if (this.status.toString()[0] === '2') {
+                callback(JSON.parse(this.responseText));
+            } else {
+                errorCB(this.status, this.responseText);
+            }
+        }
+
+        if (method === 'POST') {
+            req.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            req.send(JSON.stringify(data));
+        } else {
+            req.send();
+        }
+    }
+
+    // Load player list from server into the DOM
+    var loadPlayerList = function() {
+        xhr('GET', '/playerList', null, function(list) {
+
+            for (var i = 0; i < list.length; i++)(function(player) {
+                var li = document.createElement('li');
+                li.innerHTML = player.name;
+                li.classList.add('joueur');
+                li.id = player.player_id;
+                li.addEventListener('click', function() {
+                    updatePlayerToPlayerList(player, li);
+                    displayCount();
+                }, false);
+                document.getElementById('joueurs').appendChild(li);
+            })(list[i]);
+
+        }, function(error, data) {
+            // error handling
+            console.log(error, data);
+        });
+    };
+
+    loadPlayerList();
+
+    // Add player to player list
+    var updatePlayerToPlayerList = function(player, li) {
+        if ((ids.indexOf(player.player_id) === -1) & (ids.length < 12)) {
+            ids.push(player.player_id);
+            li.classList.add('added');
+        } else if (ids.indexOf(player.player_id) !== -1) {
+            ids.splice(ids.indexOf(player.player_id), 1);
+            li.classList.remove('added');
+            li.classList.remove('red');
+            li.classList.remove('blu');
+        }
+        document.getElementById('playerCount').innerHTML = ids.length
+    };
 
 
-        <div id="playerCount" style="float:left">
-            0 <!-- updated every time a player is clicked -->
+    var sendList = function() {
 
-        </div>
-
-        <div style="clear:both">
-            <ul id="joueurs">
-                <!-- Will be completed with the list of players from the server -->
-            </ul>
-        </div>
-
-        <div class="button" style="clear:both;float:left;margin-top:20px;background-color:hsl(272,34%,40%);color:white" onclick="sendList()">
-            Générer les équipes
-        </div>
-
-        <div class="button" style="float:left;margin-top:20px;background-color:hsl(29,53%,36%);color:white" onclick="resetList()">
-            Réinitialiser les joueurs
-        </div>
-
-        <div id="quality" style="clear:both;float:left;margin-top:25px;display:none">
-            Qualité du match :
-        </div>
-
-        <script type="text/javascript">
-
-            var ids = [];
-            // Simple asynchronous requests to server
-            function xhr(method, url, data, callback, errorCB) {
-              var req = new XMLHttpRequest()
-              req.open(method, url, true);
-
-              req.onload = function(e) {
-                if (this.status.toString()[0] === '2') {
-                  callback(JSON.parse(this.responseText));
-                } else {
-                  errorCB(this.status, this.responseText);
-                }
-              }
-
-              if (method === 'POST') {
-                req.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-                req.send(JSON.stringify(data));
-              } else {
-                req.send();
-              }
+        xhr('POST', '/matchmaking', { ids: ids }, function(data) {
+            var elements = document.getElementsByClassName('joueur');
+            for (var j = 0; j < elements.length; j++) {
+                elements[j].classList.remove('added');
             }
 
-            // Load player list from server into the DOM
-            var loadPlayerList = function () {
-                xhr('GET', '/playerList', null, function (list) {
 
-                    for (var i = 0; i < list.length; i++) (function (player) {
-                        var li = document.createElement('li');
-                        li.innerHTML = player.name;
-                        li.classList.add('joueur');
-                        li.id = player.player_id;
-                        li.addEventListener('click', function () {
-                            updatePlayerToPlayerList(player, li);
-                            displayCount();
-                        }, false);
-                        document.getElementById('joueurs').appendChild(li);
-                    })(list[i]);
+            [].forEach.call(document.getElementsByClassName('joueur'), function(id) {
+                id.classList.remove('red');
+                id.classList.remove('blu');
+            });
+            // Team 1 in RED
+            data[0].forEach(function(id) {
+                document.getElementById(id).classList.add('red');
+            });
 
-                }, function (error, data) {
-                    // error handling
-                    console.log(error, data);
-                });
-            };
+            // Team 2 in BLU
+            data[1].forEach(function(id) {
+                document.getElementById(id).classList.add('blu');
+            });
 
-            loadPlayerList();
-
-            // Add player to player list
-            var updatePlayerToPlayerList = function(player, li) {
-                if ((ids.indexOf(player.player_id) === -1)&(ids.length<12)) {
-                    ids.push(player.player_id);
-                    li.classList.add('added');
-                }
-                else if (ids.indexOf(player.player_id) !== -1){
-                    ids.splice(ids.indexOf(player.player_id), 1);
-                    li.classList.remove('added');
-                    li.classList.remove('red');
-                    li.classList.remove('blu');
-                }
-                document.getElementById('playerCount').innerHTML = ids.length
-            };
+            // Match quality
 
 
-            var sendList = function() {
+            [].forEach.call(document.getElementsByClassName('qualityScore'), function(div) {
+                div.style.display = "none";
+            });
+            document.getElementById('quality').style.display = "inline-block";
+            var qualitySpan = document.createElement('span');
+            qualitySpan.className = 'qualityScore';
+            qualitySpan.innerHTML = ' '.concat(Math.floor(data[2] * 100).toString()).concat(' %');
+            // qualitySpan.style.cssFloat = 'left';
+            // qualitySpan.style.marginTop = '25px';
+            document.getElementById('quality').appendChild(qualitySpan);
 
-                xhr('POST', '/matchmaking', {ids: ids}, function (data) {
-                    var elements = document.getElementsByClassName('joueur');
-                    for (var j = 0; j < elements.length; j++) {
-                        elements[j].classList.remove('added');
-                    }
+            // small protection
 
+            if (ids.length > 1) {
+                document.getElementById('blue-team').innerHTML = ''
+                document.getElementById('red-team').innerHTML = ''
+                // YaP : add text list of each teams for easy copy/paste in tagpro chat
+                xhr('POST', '/players/team', { ids: data[0] }, function(redTeam) {
+                    redTeam.forEach(function(redEl) {
+                        document.getElementById('red-team').append(redEl.name + ' ');
+                    })
+                    document.getElementById('red-team-container').style.display = "block";
+                }, function(err) {
+                    console.log('error : ', err)
+                })
 
-                    [].forEach.call(document.getElementsByClassName('joueur'), function(id) {
-                        id.classList.remove('red');
-                        id.classList.remove('blu');
-                    });
-                    // Team 1 in RED
-                    data[0].forEach(function (id) {
-                        document.getElementById(id).classList.add('red');
-                    });
+                xhr('POST', '/players/team', { ids: data[1] }, function(blueTeam) {
+                    blueTeam.forEach(function(redEl) {
+                        document.getElementById('blue-team').append(redEl.name + ' ');
+                    })
+                    document.getElementById('blue-team-container').style.display = "block";
+                }, function(err) {
+                    console.log('error : ', err)
+                })
+            }
+        }, function(error, data) {
+            // error handling
+            console.log(error, data);
+        });
 
-                    // Team 2 in BLU
-                    data[1].forEach(function (id) {
-                        document.getElementById(id).classList.add('blu');
-                    });
+    };
 
-                    // Match quality
+    var resetList = function() {
+        ids = [];
+        var elements = document.getElementsByClassName('joueur');
+        for (var j = 0; j < elements.length; j++) {
+            elements[j].className = 'joueur';
+        };
+        [].forEach.call(document.getElementsByClassName('qualityScore'), function(div) {
+            div.style.display = "none";
+        });
+        document.getElementById('quality').style.display = "none";
+        document.getElementById('playerCount').innerHTML = ids.length;
+        document.getElementById('red-team-container').style.display = "none";
+        document.getElementById('red-team').innerHTML = ''
+        document.getElementById('blue-team-container').style.display = "none";
+        document.getElementById('blue-team').innerHTML = ''
 
+    };
 
-                    [].forEach.call(document.getElementsByClassName('qualityScore'), function (div) {
-                        div.style.display = "none";
-                    });
-                    document.getElementById('quality').style.display = "block";
-                    var div = document.createElement('div');
-                    div.className = 'qualityScore';
-                    div.innerHTML = ' '.concat(Math.floor(data[2]*100).toString()).concat(' %');
-                    div.style.cssFloat = 'left';
-                    div.style.marginTop = '25px';
-                    document.body.appendChild(div);
+    var displayCount = function() {
+        document.getElementById('playerCount').innerHTML = ids.length;
+    };
 
-                }, function (error, data) {
-                    // error handling
-                    console.log(error, data);
-                });
-            };
+    (function(i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] || function() {
+            (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date();
+        a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
-            var resetList = function() {
-                ids=[];
-                var elements = document.getElementsByClassName('joueur');
-                for (var j = 0; j < elements.length; j++) {
-                    elements[j].className = 'joueur';
-                };
-                [].forEach.call(document.getElementsByClassName('qualityScore'), function (div) {
-                        div.style.display = "none";
-                    });
-                document.getElementById('quality').style.display = "none";
-                document.getElementById('playerCount').innerHTML = ids.length;
-            };
+    ga('create', 'UA-81626852-1', 'auto');
+    ga('send', 'pageview');
+    </script>
+</body>
 
-            var displayCount = function() {
-                document.getElementById('playerCount').innerHTML = ids.length;
-            };
-
-            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-            })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-            ga('create', 'UA-81626852-1', 'auto');
-            ga('send', 'pageview');
-
-
-        </script>
-    </body>
 </html>
