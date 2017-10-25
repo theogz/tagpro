@@ -12,3 +12,9 @@ node_modules
 
 # Sensitive files
 .env
+
+# node modules
+node_modules/
+
+# Pip virtualenv (YaP)
+tagpro
