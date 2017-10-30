@@ -1,6 +1,6 @@
-numpy==1.8.1
+numpy==1.13.3
 scipy==0.14.0
-pandas==0.18.0
+pandas==0.21.0
 trueskill==0.4.4
 psycopg2==2.6.1
 plotly==1.12.2
