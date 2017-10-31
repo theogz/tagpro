@@ -2,6 +2,9 @@
   "name": "tagpro",
   "version": "0.0.1",
   "description": "Yolo",
+  "engines": {
+    "node": "5.2.0"
+  },
   "main": "server.js",
   "dependencies": {
     "async": "^2.1.5",

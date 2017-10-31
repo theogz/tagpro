@@ -1,4 +1,4 @@
-numpy==1.13.3
+numpy==1.9.2
 scipy==0.14.0
 pandas==0.21.0
 trueskill==0.4.4
