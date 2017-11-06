@@ -80,7 +80,7 @@ app.get('/players/:id([0-9]+)', function(req, res) {
 
             var player = result.rows[0];
 
-            var query = "SELECT * FROM matchs m INNER JOIN (SELECT match_id, team FROM players_in_team WHERE player_id="+player_id+") t ON m.id = t.match_id ORDER BY added_at DESC LIMIT 25;"
+            var query = `SELECT * FROM matchs m INNER JOIN (SELECT match_id, team FROM players_in_team WHERE player_id=${player_id}) t ON m.id = t.match_id ORDER BY added_at DESC LIMIT 25;`
             client.query(query, function (err, result) {
                 done();
                 if(err) return console.error('random error db', err);
@@ -248,11 +248,12 @@ app.post('/matchmaking', function(req, res) {
     });
 });
 
-app.get('/matchList', function(req, res) {
+app.post('/matchList', function(req, res) {
+    const offset = 15*(req.body.page-1) || 0;
     pg_pool.connect(function(err, client, done) {
         if(err) return console.error('could not connect to postgres', err);
 
-        client.query('SELECT * FROM matchs ORDER BY id desc', function (err, result) {
+        client.query(`SELECT * FROM matchs ORDER BY id desc OFFSET ${offset} LIMIT 15;`, function (err, result) {
             done();
             if(err) return console.error('could not query db', err);
 
