@@ -55,7 +55,7 @@ var BASIC_AUTH = [
 
 
 var season = 11;
-var query_for_ranks = fs.readFileSync('./query_ranking_evolution.sql').toString().replace('${season}', season);
+var query_for_ranks = fs.readFileSync('./scripts/query_ranking_evolution.sql').toString().replace('${season}', season);
 
 // needed to parse JSON data from client
 var bodyParser = require('body-parser');
