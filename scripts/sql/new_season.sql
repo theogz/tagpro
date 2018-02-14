@@ -4,7 +4,7 @@ select
   , now() as updated_at
   , 2500 as mmr
   , 833 as sigma
-  , 10 as season
+  , ${season} as season
   from mmr_variations
   group by 1
 )
