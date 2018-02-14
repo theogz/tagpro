@@ -228,7 +228,7 @@ app.post('/trueskill', auth, function (req, res) {
                 console.log('Score updated');
 
                 PythonShell.run('graphs_plotly.py', function(err, results){
-                    if (err) throw err;                
+                    if (err) console.log(err);
                     console.log('Graph updated');
                 });
             });
