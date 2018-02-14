@@ -1,8 +1,8 @@
-DELETE FROM matchs where id = 605;
+DELETE FROM matchs where id >= ${match_id};
 
-DELETE FROM players_in_team where match_id = 605;
+DELETE FROM players_in_team where match_id >= ${match_id};
 
-DELETE FROM mmr_variations where updated_at = '2017-10-03 15:21:23.37692';
+DELETE FROM mmr_variations where updated_at >= ${date_of_match};
 
 
 with last_mmr as (
