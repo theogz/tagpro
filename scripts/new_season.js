@@ -34,7 +34,7 @@ pg_pool.connect(function(err, client, done) {
           return console.error('could not query db', err);
 
         console.log(`Players stats reset for season ${season}`);
-        console.log(`Please type: dokku config:set tagpro SEASON=${season} AND dokku ps:restart tagpro`);
+        console.log(`Please type: dokku config:set tagpro SEASON=${season}  /// it should automatically restart as well`);
         process.exit();
     });
 });
